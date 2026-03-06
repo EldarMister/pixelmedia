@@ -78,6 +78,8 @@ INSERT INTO services (name, category, description, price, duration)
 SELECT seed.name, seed.category, seed.description, seed.price, seed.duration
 FROM (
   VALUES
+    ('Стандарт', 'video', '1 камера и 1 дрон', 0, 'Пакет'),
+    ('VIP', 'video', '2 камеры и 2 дрона: одна камера для фото, вторая для видео', 0, 'Пакет'),
     ('Клип тартуу', 'video', 'Кесипкой клип тартуу кызматы', 15000, '4-8 саат'),
     ('Корпоратив видео', 'video', 'Компания учун видео контент жасоо', 25000, '1-2 кун'),
     ('Фото сессия', 'photo', 'Студиялык же сырттагы фото сессия', 8000, '2-3 саат'),

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ky">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -1091,6 +1091,8 @@
           <label class="field-label">Кызмат түрү *</label>
           <select class="field-input" id="f-service_type">
             <option value="">Тандаңыз...</option>
+            <option value="Стандарт">Стандарт</option>
+            <option value="VIP">VIP</option>
             <option value="Клип тартуу">🎬 Клип тартуу</option>
             <option value="Корпоратив видео">📹 Корпоратив видео</option>
             <option value="Фото сессия">📷 Фото сессия</option>
@@ -1402,7 +1404,7 @@ function fmtPrice(n) {
 function fmtDate(d) {
   if (!d) return '—';
   const dt = new Date(d);
-  return dt.toLocaleDateString('ky-KG', { day: '2-digit', month: 'short', year: 'numeric' });
+  return dt.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 function statusBadge(s) {
   const map = {
@@ -1714,6 +1716,8 @@ async function loadServices() {
 
 function getDemoServices() {
   return [
+    { id:101, name:'Стандарт', category:'video', description:'1 камера и 1 дрон', price:0, duration:'Пакет' },
+    { id:102, name:'VIP', category:'video', description:'2 камеры и 2 дрона: одна камера для фото, вторая для видео', price:0, duration:'Пакет' },
     { id:1, name:'Клип тартуу', category:'video', description:'Кесипкөй клип тартуу кызматы', price:15000, duration:'4-8 саат' },
     { id:2, name:'Корпоратив видео', category:'video', description:'Компания үчүн видео контент жасоо', price:25000, duration:'1-2 күн' },
     { id:3, name:'Фото сессия', category:'photo', description:'Студиялык же сырттагы фото сессия', price:8000, duration:'2-3 саат' },
