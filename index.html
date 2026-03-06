@@ -67,6 +67,20 @@
       z-index: 100;
       transition: transform .3s cubic-bezier(.4,0,.2,1);
     }
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 18, 0.58);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+      z-index: 90;
+    }
+    .sidebar-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
     .sidebar-logo {
       padding: 24px 20px 20px;
       border-bottom: 1px solid var(--border);
@@ -343,6 +357,14 @@
       font-size: 11px; font-weight: 700;
     }
     .kanban-cards { display: flex; flex-direction: column; gap: 10px; min-height: 60px; }
+    .dashboard-orders {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .dashboard-orders .kanban-col {
+      background: var(--card);
+    }
 
     /* ── Equipment Cards ── */
     .equipment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
@@ -664,8 +686,8 @@
       }
       .modal-footer > * { flex: 1; }
       .photo-preview-grid { grid-template-columns: repeat(3, 1fr); }
-      #statusOverview { grid-template-columns: repeat(2,1fr) !important; }
       .kanban { grid-template-columns: 1fr; }
+      .dashboard-orders { grid-template-columns: 1fr; }
       .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
@@ -757,6 +779,7 @@
       </div>
     </div>
   </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
   <!-- ═══ MAIN AREA ═══ -->
   <div class="main-area">
@@ -792,7 +815,6 @@
           <div class="stat-icon" style="background:rgba(59,130,246,0.12);color:#60a5fa">⚡</div>
           <div class="stat-value" id="statProgress">—</div>
           <div class="stat-label">Иштелүүдө</div>
-          <div class="stat-change" style="background:rgba(59,130,246,0.1);color:#60a5fa">Активдүү</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#34d399">✅</div>
@@ -818,43 +840,27 @@
             </div>
             <div style="width:48px;height:48px;border-radius:14px;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;font-size:22px">💰</div>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Аванс / задаток: <span id="statDeposit" style="color:#fbbf24">—</span></div>
           <div class="progress-bar"><div class="progress-fill" style="width:65%" id="revenueBar"></div></div>
         </div>
 
         <!-- Upcoming -->
         <div class="card">
-          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;font-family:'Syne',sans-serif">Жакынкы буйрутмалар</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;font-family:'Syne',sans-serif">Ближайшие брони</div>
           <div id="upcomingList">
             <div class="empty-state" style="padding:20px">
               <div class="icon" style="font-size:32px">📅</div>
-              <div class="sub">Жакынкы буйрутмалар жок</div>
+              <div class="sub">Бронированных заказов пока нет</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Status overview -->
       <div class="card">
-        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:18px">Статус боюнча</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px" id="statusOverview">
-          <div class="card-sm" style="text-align:center">
-            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">БРОНДОЛГОН</div>
-            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#a78bfa" id="ov-booked">0</div>
-          </div>
-          <div class="card-sm" style="text-align:center">
-            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">АВАНС</div>
-            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fbbf24" id="ov-deposit">0</div>
-          </div>
-          <div class="card-sm" style="text-align:center">
-            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">ИШТЕЛҮҮДӨ</div>
-            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#60a5fa" id="ov-progress">0</div>
-          </div>
-          <div class="card-sm" style="text-align:center">
-            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">АЯКТАГАН</div>
-            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#34d399" id="ov-completed">0</div>
-          </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px">
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700">Заказы по категориям</div>
+          <div style="font-size:12px;color:var(--muted)">На первой странице без отдельного блока аванса</div>
         </div>
+        <div class="dashboard-orders" id="dashboardOrders"></div>
       </div>
     </div>
 
@@ -1273,7 +1279,7 @@ function navigate(page, el) {
   document.getElementById(`page-${page}`).classList.add('active');
   if (el) el.classList.add('active');
   currentPage = page;
-  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+  if (window.innerWidth <= 768) closeSidebar();
 
   const titles = {
     dashboard: 'Башкы Панел',
@@ -1311,7 +1317,20 @@ function openAddModal() {
 }
 
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('open');
+  syncSidebarOverlay(sidebar.classList.contains('open'));
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  syncSidebarOverlay(false);
+}
+
+function syncSidebarOverlay(isOpen) {
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!overlay) return;
+  overlay.classList.toggle('open', !!isOpen && window.innerWidth <= 768);
 }
 
 function isOffDay(dateStr) {
@@ -1419,64 +1438,105 @@ function statusBadge(s) {
 
 // ── DASHBOARD ─────────────────────────────────────────
 async function loadDashboard() {
-  const res = await apiFetch('/orders/stats');
-  if (res.success) {
-    const s = res.data.stats;
-    document.getElementById('statTotal').textContent = s.total;
-    document.getElementById('statProgress').textContent = s.in_progress;
-    document.getElementById('statCompleted').textContent = s.completed;
-    document.getElementById('statBooked').textContent = s.booked;
-    document.getElementById('statRevenue').textContent = fmtPrice(s.total_amount);
-    document.getElementById('statDeposit').textContent = fmtPrice(s.total_deposit);
-    document.getElementById('ov-booked').textContent = s.booked;
-    document.getElementById('ov-deposit').textContent = s.deposit;
-    document.getElementById('ov-progress').textContent = s.in_progress;
-    document.getElementById('ov-completed').textContent = s.completed;
+  const [statsRes, ordersRes] = await Promise.all([
+    apiFetch('/orders/stats'),
+    apiFetch('/orders')
+  ]);
 
-    const upcoming = res.data.upcoming;
-    const ul = document.getElementById('upcomingList');
-    if (upcoming.length) {
-      ul.innerHTML = upcoming.map(o => `
-        <div class="upcoming-item">
-          <div class="upcoming-dot" style="background:${statusColor(o.status)}"></div>
-          <div>
-            <div class="upcoming-client">${o.client_name}</div>
-            <div class="upcoming-detail">${o.service_type} · ${fmtPrice(o.price)}</div>
-          </div>
-          <div class="upcoming-date">${fmtDate(o.order_date)}</div>
-        </div>
-      `).join('');
-    }
-  } else {
-    // Demo data
-    document.getElementById('statTotal').textContent = '24';
-    document.getElementById('statProgress').textContent = '7';
-    document.getElementById('statCompleted').textContent = '12';
-    document.getElementById('statBooked').textContent = '5';
-    document.getElementById('statRevenue').textContent = '840,000 сом';
-    document.getElementById('statDeposit').textContent = '180,000 сом';
-    document.getElementById('ov-booked').textContent = '5';
-    document.getElementById('ov-deposit').textContent = '3';
-    document.getElementById('ov-progress').textContent = '7';
-    document.getElementById('ov-completed').textContent = '12';
-    document.getElementById('upcomingList').innerHTML = `
-      <div class="upcoming-item">
-        <div class="upcoming-dot" style="background:#8b5cf6"></div>
-        <div><div class="upcoming-client">Айгүл Асанова</div><div class="upcoming-detail">Фото сессия · 8,000 сом</div></div>
-        <div class="upcoming-date">15 мар</div>
-      </div>
-      <div class="upcoming-item">
-        <div class="upcoming-dot" style="background:#3b82f6"></div>
-        <div><div class="upcoming-client">Бакыт Уулу</div><div class="upcoming-detail">Клип тартуу · 15,000 сом</div></div>
-        <div class="upcoming-date">18 мар</div>
-      </div>
-      <div class="upcoming-item">
-        <div class="upcoming-dot" style="background:#f59e0b"></div>
-        <div><div class="upcoming-client">Nurzat Events</div><div class="upcoming-detail">Корпоратив видео · 25,000 сом</div></div>
-        <div class="upcoming-date">22 мар</div>
+  const orders = ordersRes.success ? ordersRes.data : getDemoOrders();
+  const bookingStatuses = new Set(['booked', 'deposit']);
+  const bookedOrders = orders
+    .filter(o => bookingStatuses.has(o.status))
+    .sort((a, b) => new Date(a.order_date) - new Date(b.order_date));
+  const inProgressOrders = orders
+    .filter(o => o.status === 'in_progress')
+    .sort((a, b) => new Date(a.order_date) - new Date(b.order_date));
+  const completedOrders = orders
+    .filter(o => o.status === 'completed')
+    .sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+
+  const summary = {
+    total: orders.length,
+    booked: bookedOrders.length,
+    in_progress: inProgressOrders.length,
+    completed: completedOrders.length,
+    total_amount: orders.reduce((sum, o) => sum + Number(o.price || 0), 0)
+  };
+
+  if (statsRes.success && statsRes.data && statsRes.data.stats) {
+    const s = statsRes.data.stats;
+    summary.total = s.total ?? summary.total;
+    summary.in_progress = s.in_progress ?? summary.in_progress;
+    summary.completed = s.completed ?? summary.completed;
+    summary.total_amount = Number(s.total_amount ?? summary.total_amount);
+  }
+
+  document.getElementById('statTotal').textContent = summary.total;
+  document.getElementById('statProgress').textContent = summary.in_progress;
+  document.getElementById('statCompleted').textContent = summary.completed;
+  document.getElementById('statBooked').textContent = summary.booked;
+  document.getElementById('statRevenue').textContent = fmtPrice(summary.total_amount);
+
+  const revenueBar = document.getElementById('revenueBar');
+  const progressRatio = summary.total ? Math.round((summary.completed / summary.total) * 100) : 0;
+  revenueBar.style.width = `${Math.max(progressRatio, 12)}%`;
+
+  renderUpcomingBookings(bookedOrders);
+  renderDashboardOrders({
+    booked: bookedOrders,
+    in_progress: inProgressOrders,
+    completed: completedOrders
+  });
+}
+
+function renderUpcomingBookings(orders) {
+  const ul = document.getElementById('upcomingList');
+  if (!orders.length) {
+    ul.innerHTML = `
+      <div class="empty-state" style="padding:20px">
+        <div class="icon" style="font-size:32px">📅</div>
+        <div class="sub">Бронированных заказов пока нет</div>
       </div>
     `;
+    return;
   }
+
+  ul.innerHTML = orders.slice(0, 5).map(o => `
+    <div class="upcoming-item">
+      <div class="upcoming-dot" style="background:${statusColor(o.status)}"></div>
+      <div>
+        <div class="upcoming-client">${o.client_name}</div>
+        <div class="upcoming-detail">${o.service_type} · ${fmtPrice(o.price)}</div>
+      </div>
+      <div class="upcoming-date">${fmtDate(o.order_date)}</div>
+    </div>
+  `).join('');
+}
+
+function renderDashboardOrders(groups) {
+  const container = document.getElementById('dashboardOrders');
+  const columns = [
+    { key: 'booked', title: '🔖 Бронь', color: '#a78bfa', background: 'rgba(139,92,246,0.15)' },
+    { key: 'in_progress', title: '⚡ В работе', color: '#60a5fa', background: 'rgba(59,130,246,0.12)' },
+    { key: 'completed', title: '✅ Завершенные', color: '#34d399', background: 'rgba(16,185,129,0.1)' }
+  ];
+
+  container.innerHTML = columns.map(col => {
+    const items = groups[col.key] || [];
+    const cards = items.length
+      ? items.slice(0, 4).map(o => orderCard(o, { showDeposit: false, showActions: false })).join('')
+      : `<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Заказов нет</div>`;
+
+    return `
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title" style="color:${col.color}">${col.title}</div>
+          <div class="kanban-count" style="background:${col.background};color:${col.color}">${items.length}</div>
+        </div>
+        <div class="kanban-cards">${cards}</div>
+      </div>
+    `;
+  }).join('');
 }
 
 function statusColor(s) {
@@ -1512,7 +1572,9 @@ async function loadOrders() {
   });
 }
 
-function orderCard(o) {
+function orderCard(o, options = {}) {
+  const showDeposit = options.showDeposit !== false;
+  const showActions = options.showActions !== false;
   return `
   <div class="order-card">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
@@ -1526,13 +1588,14 @@ function orderCard(o) {
       <div class="order-price">${fmtPrice(o.price)}</div>
       <div class="order-date">📅 ${fmtDate(o.order_date)}</div>
     </div>
-    ${o.deposit > 0 ? `<div style="font-size:11px;color:#fbbf24;margin-top:4px">Аванс: ${fmtPrice(o.deposit)}</div>` : ''}
+    ${showDeposit && o.deposit > 0 ? `<div style="font-size:11px;color:#fbbf24;margin-top:4px">Аванс: ${fmtPrice(o.deposit)}</div>` : ''}
     ${o.comment ? `<div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4;border-top:1px solid var(--border);padding-top:8px">${o.comment}</div>` : ''}
+    ${showActions ? `
     <div class="order-actions">
       <button class="btn-ghost" style="font-size:11px;padding:5px 10px" onclick="openOrderModal(${JSON.stringify(o).replace(/"/g,'&quot;')})">✏️ Өзгөртүү</button>
       <div style="flex:1"></div>
       <button class="btn-danger" style="font-size:11px" onclick="deleteOrder(${o.id})">🗑</button>
-    </div>
+    </div>` : ''}
   </div>`;
 }
 
@@ -2072,10 +2135,15 @@ function applyToOrder() {
 // ── INIT ──────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   navigate('dashboard', document.querySelector('.nav-item'));
+  syncSidebarOverlay(false);
   // Close modal on overlay click
   document.querySelectorAll('.modal-overlay').forEach(m => {
     m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
   });
+});
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 768) closeSidebar();
+  else syncSidebarOverlay(document.getElementById('sidebar').classList.contains('open'));
 });
 </script>
 </body>
