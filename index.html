@@ -87,10 +87,15 @@
     }
     .brand-logo {
       display: block;
-      width: 100%;
+      width: auto;
       max-width: 220px;
+      max-height: 56px;
       height: auto;
       object-fit: contain;
+    }
+    .brand-fallback {
+      display: none;
+      margin-top: 4px;
     }
     .sidebar-logo .brand {
       font-family: 'Syne', sans-serif;
@@ -357,13 +362,81 @@
       font-size: 11px; font-weight: 700;
     }
     .kanban-cards { display: flex; flex-direction: column; gap: 10px; min-height: 60px; }
-    .dashboard-orders {
+    .category-cards {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 16px;
+      margin-bottom: 24px;
     }
-    .dashboard-orders .kanban-col {
-      background: var(--card);
+    .category-card {
+      width: 100%;
+      background: linear-gradient(180deg, rgba(23,27,47,0.98), rgba(17,20,38,0.98));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .category-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(96,165,250,0.35);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.28);
+    }
+    .category-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .category-card-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: rgba(59,130,246,0.12);
+    }
+    .category-card-count {
+      min-width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+    .category-card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .category-card-sub {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
+      min-height: 36px;
+    }
+    .category-card-link {
+      margin-top: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #60a5fa;
+    }
+    .category-orders-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
     }
 
     /* ── Equipment Cards ── */
@@ -644,6 +717,8 @@
       .kanban { grid-template-columns: repeat(2,1fr); }
       .grid-4 { grid-template-columns: repeat(2,1fr); }
       .calendar-layout { grid-template-columns: 1fr; }
+      .category-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .category-orders-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
       :root { --sidebar-w: 0px; }
@@ -687,7 +762,7 @@
       .modal-footer > * { flex: 1; }
       .photo-preview-grid { grid-template-columns: repeat(3, 1fr); }
       .kanban { grid-template-columns: 1fr; }
-      .dashboard-orders { grid-template-columns: 1fr; }
+      .category-cards { grid-template-columns: 1fr; }
       .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
@@ -743,7 +818,8 @@
   <!-- ═══ SIDEBAR ═══ -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <img src="img/logo.jpeg" alt="Pixel Media" class="brand-logo" />
+      <img src="/img/logo.jpeg" alt="Pixel Media" class="brand-logo" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block';" />
+      <div class="brand brand-fallback" id="logoFallback">Pixel Media</div>
       <div class="tagline">Креатив Студиясы</div>
     </div>
     <nav class="sidebar-nav">
@@ -797,7 +873,13 @@
     </header>
 
     <!-- ═══ DASHBOARD ═══ -->
-    <div class="page active" id="page-dashboard">
+<div class="page active" id="page-dashboard">
+      <div>
+        <div class="section-title" style="margin-bottom:8px">Категории заказов</div>
+        <div class="section-sub" style="margin-bottom:18px">Той, Love Story, виньетка и рекламные ролики</div>
+      </div>
+      <div class="category-cards" id="dashboardCategoryCards"></div>
+
       <div style="margin-bottom:24px">
         <div class="section-title">Кош келдиңиз 👋</div>
         <div class="section-sub">Pixel Media CRM — бүгүнкү абал</div>
@@ -855,13 +937,17 @@
         </div>
       </div>
 
-      <div class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px">
-          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700">Заказы по категориям</div>
-          <div style="font-size:12px;color:var(--muted)">На первой странице без отдельного блока аванса</div>
+    </div>
+
+    <div class="page" id="page-category">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px">
+        <div>
+          <div class="section-title" id="categoryPageTitle">Категория</div>
+          <div class="section-sub" id="categoryPageSub">Заказы по выбранной категории</div>
         </div>
-        <div class="dashboard-orders" id="dashboardOrders"></div>
+        <button class="btn-ghost" type="button" onclick="navigate('dashboard', document.querySelector('.nav-item[onclick*=dashboard]'))">← Назад</button>
       </div>
+      <div class="category-orders-grid" id="categoryOrdersGrid"></div>
     </div>
 
     <!-- ═══ ORDERS ═══ -->
@@ -1097,6 +1183,10 @@
           <label class="field-label">Кызмат түрү *</label>
           <select class="field-input" id="f-service_type">
             <option value="">Тандаңыз...</option>
+            <option value="Той (свадьба)">Той (свадьба)</option>
+            <option value="Love Story">Love Story</option>
+            <option value="Виньетка">Виньетка</option>
+            <option value="Рекламные ролики">Рекламные ролики</option>
             <option value="Стандарт">Стандарт</option>
             <option value="VIP">VIP</option>
             <option value="Клип тартуу">🎬 Клип тартуу</option>
@@ -1271,6 +1361,41 @@ let calSelectedDate = '';
 let currentPage = 'dashboard';
 let serviceFilter = 'all';
 let currentOrderPhotos = [];
+let currentCategoryKey = 'wedding';
+const ORDER_CATEGORIES = [
+  {
+    key: 'wedding',
+    title: 'Той (свадьба)',
+    shortTitle: 'Той',
+    icon: '💍',
+    subtitle: 'Свадебные съемки и пакеты Standard / VIP',
+    keywords: ['той', 'свадьба', 'стандарт', 'vip']
+  },
+  {
+    key: 'love_story',
+    title: 'Love Story',
+    shortTitle: 'Love Story',
+    icon: '❤️',
+    subtitle: 'Парные истории и романтические съемки',
+    keywords: ['love story', 'лав стори', 'lovestory']
+  },
+  {
+    key: 'vignette',
+    title: 'Виньетка',
+    shortTitle: 'Виньетка',
+    icon: '🎓',
+    subtitle: 'Школьные и выпускные виньетки',
+    keywords: ['виньетка', 'виньет']
+  },
+  {
+    key: 'ads',
+    title: 'Рекламные ролики',
+    shortTitle: 'Реклама',
+    icon: '🎬',
+    subtitle: 'Коммерческие и рекламные видеоролики',
+    keywords: ['реклам', 'корпоратив видео']
+  }
+];
 
 // ── Navigation ────────────────────────────────────────
 function navigate(page, el) {
@@ -1278,11 +1403,15 @@ function navigate(page, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById(`page-${page}`).classList.add('active');
   if (el) el.classList.add('active');
+  else if (page === 'category') document.querySelector('.nav-item[onclick*="dashboard"]')?.classList.add('active');
   currentPage = page;
   if (window.innerWidth <= 768) closeSidebar();
 
+  const currentCategory = getOrderCategoryConfig(currentCategoryKey);
+
   const titles = {
     dashboard: 'Башкы Панел',
+    category: currentCategory ? currentCategory.title : 'Категория',
     orders: 'Буйрутмалар',
     equipment: 'Жабдуулар',
     services: 'Кызматтар',
@@ -1291,6 +1420,7 @@ function navigate(page, el) {
   };
   const actions = {
     dashboard: { show: false },
+    category: { show: true, label: 'Буйрутма кошуу' },
     orders: { show: true, label: 'Буйрутма кошуу' },
     equipment: { show: true, label: 'Жабдуу кошуу' },
     services: { show: true, label: 'Кызмат кошуу' },
@@ -1303,6 +1433,7 @@ function navigate(page, el) {
   document.getElementById('headerActionLabel').textContent = act.label || '';
 
   if (page === 'dashboard') loadDashboard();
+  if (page === 'category') loadCategoryPage();
   if (page === 'orders') loadOrders();
   if (page === 'equipment') loadEquipment();
   if (page === 'services') loadServices();
@@ -1311,7 +1442,7 @@ function navigate(page, el) {
 }
 
 function openAddModal() {
-  if (currentPage === 'orders') openOrderModal();
+  if (currentPage === 'orders' || currentPage === 'category') openOrderModal();
   else if (currentPage === 'equipment') openEquipmentModal();
   else if (currentPage === 'services') openServiceModal();
 }
@@ -1331,6 +1462,29 @@ function syncSidebarOverlay(isOpen) {
   const overlay = document.getElementById('sidebarOverlay');
   if (!overlay) return;
   overlay.classList.toggle('open', !!isOpen && window.innerWidth <= 768);
+}
+
+function getOrderCategoryConfig(key) {
+  return ORDER_CATEGORIES.find(category => category.key === key) || ORDER_CATEGORIES[0];
+}
+
+function normalizeOrderCategoryText(order) {
+  return `${order?.service_type || ''} ${order?.comment || ''}`.toLowerCase();
+}
+
+function getOrderCategoryKey(order) {
+  const text = normalizeOrderCategoryText(order);
+  const matched = ORDER_CATEGORIES.find(category => category.keywords.some(keyword => text.includes(keyword)));
+  return matched ? matched.key : '';
+}
+
+function getOrdersByCategory(orders, key) {
+  return orders.filter(order => getOrderCategoryKey(order) === key);
+}
+
+function openCategoryPage(key) {
+  currentCategoryKey = key;
+  navigate('category');
 }
 
 function isOffDay(dateStr) {
@@ -1444,6 +1598,7 @@ async function loadDashboard() {
   ]);
 
   const orders = ordersRes.success ? ordersRes.data : getDemoOrders();
+  allOrders = orders;
   const bookingStatuses = new Set(['booked', 'deposit']);
   const bookedOrders = orders
     .filter(o => bookingStatuses.has(o.status))
@@ -1481,12 +1636,8 @@ async function loadDashboard() {
   const progressRatio = summary.total ? Math.round((summary.completed / summary.total) * 100) : 0;
   revenueBar.style.width = `${Math.max(progressRatio, 12)}%`;
 
+  renderDashboardCategoryCards(orders);
   renderUpcomingBookings(bookedOrders);
-  renderDashboardOrders({
-    booked: bookedOrders,
-    in_progress: inProgressOrders,
-    completed: completedOrders
-  });
 }
 
 function renderUpcomingBookings(orders) {
@@ -1513,30 +1664,56 @@ function renderUpcomingBookings(orders) {
   `).join('');
 }
 
-function renderDashboardOrders(groups) {
-  const container = document.getElementById('dashboardOrders');
-  const columns = [
-    { key: 'booked', title: '🔖 Бронь', color: '#a78bfa', background: 'rgba(139,92,246,0.15)' },
-    { key: 'in_progress', title: '⚡ В работе', color: '#60a5fa', background: 'rgba(59,130,246,0.12)' },
-    { key: 'completed', title: '✅ Завершенные', color: '#34d399', background: 'rgba(16,185,129,0.1)' }
-  ];
+function renderDashboardCategoryCards(orders) {
+  const container = document.getElementById('dashboardCategoryCards');
+  if (!container) return;
 
-  container.innerHTML = columns.map(col => {
-    const items = groups[col.key] || [];
-    const cards = items.length
-      ? items.slice(0, 4).map(o => orderCard(o, { showDeposit: false, showActions: false })).join('')
-      : `<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Заказов нет</div>`;
-
+  container.innerHTML = ORDER_CATEGORIES.map(category => {
+    const count = getOrdersByCategory(orders, category.key).length;
     return `
-      <div class="kanban-col">
-        <div class="kanban-col-header">
-          <div class="kanban-col-title" style="color:${col.color}">${col.title}</div>
-          <div class="kanban-count" style="background:${col.background};color:${col.color}">${items.length}</div>
+      <button type="button" class="category-card" onclick="openCategoryPage('${category.key}')">
+        <div class="category-card-head">
+          <span class="category-card-icon">${category.icon}</span>
+          <span class="category-card-count">${count}</span>
         </div>
-        <div class="kanban-cards">${cards}</div>
-      </div>
+        <div class="category-card-title">${category.title}</div>
+        <div class="category-card-sub">${category.subtitle}</div>
+        <div class="category-card-link">Открыть заказы →</div>
+      </button>
     `;
   }).join('');
+}
+
+async function loadCategoryPage() {
+  const category = getOrderCategoryConfig(currentCategoryKey);
+  const title = document.getElementById('categoryPageTitle');
+  const sub = document.getElementById('categoryPageSub');
+  const grid = document.getElementById('categoryOrdersGrid');
+
+  title.textContent = category.title;
+  sub.textContent = category.subtitle;
+
+  const res = await apiFetch('/orders');
+  const orders = res.success ? res.data : (allOrders.length ? allOrders : getDemoOrders());
+  allOrders = orders;
+
+  const filtered = getOrdersByCategory(orders, category.key)
+    .sort((a, b) => new Date(a.order_date) - new Date(b.order_date));
+
+  if (!filtered.length) {
+    grid.innerHTML = `
+      <div class="card" style="grid-column:1/-1">
+        <div class="empty-state">
+          <div class="icon">${category.icon}</div>
+          <div class="title">Заказов пока нет</div>
+          <div class="sub">Когда добавишь заказы в категорию "${category.title}", они появятся здесь.</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(order => orderCard(order)).join('');
 }
 
 function statusColor(s) {
@@ -1601,12 +1778,12 @@ function orderCard(o, options = {}) {
 
 function getDemoOrders() {
   return [
-    { id:1, client_name:'Айгүл Асанова', phone:'+996700111222', service_type:'Фото сессия', order_date:'2026-03-15', price:8000, deposit:2000, status:'booked', comment:'Жасмин паркта тартуу', photos:[] },
-    { id:2, client_name:'Бакыт Уулу', phone:'+996550222333', service_type:'Клип тартуу', order_date:'2026-03-18', price:15000, deposit:5000, status:'deposit', comment:'', photos:[] },
-    { id:3, client_name:'Nurzat Events', phone:'+996700333444', service_type:'Корпоратив видео', order_date:'2026-03-10', price:25000, deposit:10000, status:'in_progress', comment:'Корпоратив иш-чара', photos:[] },
-    { id:4, client_name:'Салтанат Исаева', phone:'+996555444555', service_type:'Логотип дизайн', order_date:'2026-02-20', price:12000, deposit:0, status:'completed', comment:'', photos:[] },
-    { id:5, client_name:'Акылбек Жолдошов', phone:'+996700555666', service_type:'Фото сессия', order_date:'2026-03-22', price:8000, deposit:3000, status:'booked', comment:'Кезектеги сессия', photos:[] },
-    { id:6, client_name:'Белек Абдиев', phone:'+996550666777', service_type:'SMM Дизайн', order_date:'2026-03-05', price:6000, deposit:0, status:'in_progress', comment:'', photos:[] },
+    { id:1, client_name:'Айгүл Асанова', phone:'+996700111222', service_type:'Love Story', order_date:'2026-03-15', price:18000, deposit:2000, status:'booked', comment:'Съемка в парке', photos:[] },
+    { id:2, client_name:'Бакыт Уулу', phone:'+996550222333', service_type:'Той (свадьба)', order_date:'2026-03-18', price:45000, deposit:5000, status:'deposit', comment:'Банкет и прогулка', photos:[] },
+    { id:3, client_name:'Nurzat Events', phone:'+996700333444', service_type:'Рекламные ролики', order_date:'2026-03-10', price:25000, deposit:10000, status:'in_progress', comment:'Ролик для бренда', photos:[] },
+    { id:4, client_name:'Салтанат Исаева', phone:'+996555444555', service_type:'Виньетка', order_date:'2026-02-20', price:12000, deposit:0, status:'completed', comment:'11-класс', photos:[] },
+    { id:5, client_name:'Акылбек Жолдошов', phone:'+996700555666', service_type:'VIP', order_date:'2026-03-22', price:80000, deposit:3000, status:'booked', comment:'Свадебный пакет', photos:[] },
+    { id:6, client_name:'Белек Абдиев', phone:'+996550666777', service_type:'Виньетка', order_date:'2026-03-05', price:16000, deposit:0, status:'in_progress', comment:'Школьная съемка', photos:[] },
   ];
 }
 
@@ -1620,6 +1797,9 @@ function openOrderModal(order = null) {
   if (!order) {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('f-order_date').value = today;
+    if (currentPage === 'category') {
+      document.getElementById('f-service_type').value = getOrderCategoryConfig(currentCategoryKey).title;
+    }
   }
   currentOrderPhotos = order ? [...(order.photos || [])] : [];
   syncOrderPhotoInput();
@@ -1651,7 +1831,9 @@ async function saveOrder() {
   });
   closeModal('orderModal');
   showToast(id ? 'Буйрутма жаңыланды' : 'Буйрутма кошулду');
-  loadOrders();
+  loadDashboard();
+  if (currentPage === 'category') loadCategoryPage();
+  else loadOrders();
 }
 
 async function deleteOrder(id) {
@@ -1659,7 +1841,9 @@ async function deleteOrder(id) {
   await apiFetch(`/orders/${id}`, { method: 'DELETE' });
   showToast('Буйрутма жок кылынды');
   allOrders = allOrders.filter(o => o.id !== id);
-  loadOrders();
+  loadDashboard();
+  if (currentPage === 'category') loadCategoryPage();
+  else loadOrders();
 }
 
 // ── EQUIPMENT ─────────────────────────────────────────

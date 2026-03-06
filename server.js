@@ -22,6 +22,7 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use('/img', express.static(path.join(__dirname, 'img')));
 
 app.use('/api/orders', ordersRouter);
 app.use('/api/services', servicesRouter);
