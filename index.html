@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpeg" href="img/logo.jpeg" />
   <title>Pixel Media — CRM Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,13 +26,19 @@
       --sidebar-w: 260px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      width: 100%;
+      overflow-x: hidden;
+    }
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
       color: var(--text);
       overflow-x: hidden;
       min-height: 100vh;
+      width: 100%;
+      max-width: 100%;
     }
 
     /* ── Scrollbar ── */
@@ -40,7 +47,13 @@
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
 
     /* ── Layout ── */
-    .layout { display: flex; min-height: 100vh; }
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: clip;
+    }
 
     /* ── Sidebar ── */
     .sidebar {
@@ -57,6 +70,13 @@
     .sidebar-logo {
       padding: 24px 20px 20px;
       border-bottom: 1px solid var(--border);
+    }
+    .brand-logo {
+      display: block;
+      width: 100%;
+      max-width: 220px;
+      height: auto;
+      object-fit: contain;
     }
     .sidebar-logo .brand {
       font-family: 'Syne', sans-serif;
@@ -139,6 +159,10 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
     }
 
     /* ── Header ── */
@@ -202,7 +226,15 @@
     .btn-success:hover { background: rgba(16,185,129,0.2); }
 
     /* ── Page Content ── */
-    .page { padding: 28px; display: none; animation: fadeIn .3s ease; }
+    .page {
+      padding: 28px;
+      display: none;
+      animation: fadeIn .3s ease;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
     .page.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
@@ -594,7 +626,11 @@
     @media (max-width: 768px) {
       :root { --sidebar-w: 0px; }
       .sidebar { transform: translateX(-260px); }
-      .sidebar.open { transform: translateX(0); width: 260px; }
+      .sidebar.open { transform: translateX(0); width: min(260px, 84vw); }
+      .layout, .main-area, .page, .topbar, .card, .card-sm, .kanban, .calendar-layout, .calendar-wrapper, .calendar-sidebar, .services-grid, .equipment-grid, .calc-wrapper, .calc-card {
+        min-width: 0;
+        max-width: 100%;
+      }
       #menuBtn { display: inline-flex !important; }
       .topbar {
         height: auto;
@@ -608,6 +644,7 @@
       .card, .calc-card { padding: 16px; }
       .service-tabs { overflow-x: auto; padding-bottom: 4px; }
       .service-tab { white-space: nowrap; }
+      img { max-width: 100%; height: auto; }
       .calendar-header, .calendar-grid, .cal-orders-panel, .modal-body, .modal-header, .modal-footer { padding-left: 16px; padding-right: 16px; }
       .calendar-tools { align-items: stretch; }
       .calendar-tools .btn-danger { width: 100%; }
@@ -684,7 +721,7 @@
   <!-- ═══ SIDEBAR ═══ -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <div class="brand">Pixel Media</div>
+      <img src="img/logo.jpeg" alt="Pixel Media" class="brand-logo" />
       <div class="tagline">Креатив Студиясы</div>
     </div>
     <nav class="sidebar-nav">
@@ -904,32 +941,32 @@
     <div class="page" id="page-calendar">
       <div style="margin-bottom:24px">
         <div class="section-title">Календарь</div>
-        <div class="section-sub">Буйрутмалардын жылнаамасы</div>
+        <div class="section-sub">Расписание заказов и нерабочих дней</div>
       </div>
       <div class="calendar-layout">
         <div class="calendar-wrapper">
           <div class="calendar-header">
-            <button class="cal-nav" onclick="calPrev()">‹</button>
-            <div class="calendar-month-title" id="calTitle">—</div>
-            <button class="cal-nav" onclick="calNext()">›</button>
+            <button class="cal-nav" onclick="calPrev()">?</button>
+            <div class="calendar-month-title" id="calTitle">?</div>
+            <button class="cal-nav" onclick="calNext()">?</button>
           </div>
           <div class="calendar-grid">
             <div class="calendar-tools">
               <div class="calendar-legend">
-                <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Р§С‹РіС‹С€ РєТЇРЅ</span>
-                <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span>Р‘СѓР№СЂСѓС‚РјР°Р»СѓСѓ РєТЇРЅ</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Нерабочий день</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span>День с заказами</span>
               </div>
-              <button class="btn-danger" onclick="clearOffDaysForMonth()">РђР№РґС‹РЅ РєС‹Р·С‹Р» РєТЇРЅРґУ©СЂС–РЅ С‚Р°Р·Р°Р»РѕРѕ</button>
+              <button class="btn-danger" onclick="clearOffDaysForMonth()">Очистить красные дни за месяц</button>
             </div>
-            <div class="calendar-hint">РљСЋРЅРґС– Р±Р°СЃС‹Рї С‚Р°РЅРґР°Рї, Р°РЅРґР°РЅ РєРёР№РёРЅ С‡С‹РєРєР°РЅ РїР°РЅРµР»РґРµ РєС‹Р·С‹Р» РєТЇРЅ РєР°С‚Р°СЂС‹ Р±РµР»РіРёР»РµСЃРµТЈРёР·.</div>
+            <div class="calendar-hint">Выберите день и отметьте его как нерабочий, если в этот день вы не принимаете заказы.</div>
             <div class="cal-week-days">
-              <div class="cal-week-day">Дш</div>
-              <div class="cal-week-day">Шш</div>
-              <div class="cal-week-day">Ш</div>
-              <div class="cal-week-day">Бш</div>
-              <div class="cal-week-day">Жм</div>
-              <div class="cal-week-day" style="color:#f87171">Иш</div>
-              <div class="cal-week-day" style="color:#f87171">Жк</div>
+              <div class="cal-week-day">Пн</div>
+              <div class="cal-week-day">Вт</div>
+              <div class="cal-week-day">Ср</div>
+              <div class="cal-week-day">Чт</div>
+              <div class="cal-week-day">Пт</div>
+              <div class="cal-week-day" style="color:#f87171">Сб</div>
+              <div class="cal-week-day" style="color:#f87171">Вс</div>
             </div>
             <div class="cal-days" id="calDays"></div>
           </div>
@@ -940,15 +977,14 @@
           </div>
         </div>
         <div class="card calendar-sidebar">
-          <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px">Бул айдагы буйрутмалар</div>
+          <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px">Заказы за этот месяц</div>
           <div id="calMonthOrders">
-            <div class="empty-state" style="padding:20px"><div class="sub">Буйрутмалар жок</div></div>
+            <div class="empty-state" style="padding:20px"><div class="sub">Заказов нет</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ═══ CALCULATOR ═══ -->
     <div class="page" id="page-calculator">
       <div style="margin-bottom:24px">
         <div class="section-title">Калькулятор</div>
@@ -1780,171 +1816,62 @@ async function loadCalendarDates() {
     apiFetch(`/orders/calendar?month=${calMonth}&year=${calYear}`),
     apiFetch(`/orders/calendar/off-days?month=${calMonth}&year=${calYear}`)
   ]);
+
   calOrderDates = {};
   calOffDays = [];
+
   const dates = res.success ? res.data : getDemoCalDates();
   dates.forEach(d => {
     const key = new Date(d.order_date || d).toISOString().split('T')[0];
     calOrderDates[key] = d.count || 1;
   });
+
   if (offDaysRes.success) {
     calOffDays = offDaysRes.data.map(d => new Date(d.off_date).toISOString().split('T')[0]);
   }
+
   renderCalendar();
-  loadCalMonthOrders();
-  if (calSelectedDate && calSelectedDate.startsWith(`${calYear}-${String(calMonth).padStart(2,'0')}-`)) {
-    selectCalDay(calSelectedDate, Number(calSelectedDate.slice(-2)));
+  await loadCalMonthOrders();
+
+  const monthPrefix = `${calYear}-${String(calMonth).padStart(2, '0')}-`;
+  if (calSelectedDate && calSelectedDate.startsWith(monthPrefix)) {
+    await selectCalDay(calSelectedDate, Number(calSelectedDate.slice(-2)));
   }
 }
 
 function getDemoCalDates() {
-  const yr = calYear; const mo = String(calMonth).padStart(2,'0');
+  const yr = calYear;
+  const mo = String(calMonth).padStart(2, '0');
   return [
-    { order_date: `${yr}-${mo}-05`, count:2 },
-    { order_date: `${yr}-${mo}-10`, count:1 },
-    { order_date: `${yr}-${mo}-15`, count:3 },
-    { order_date: `${yr}-${mo}-18`, count:1 },
-    { order_date: `${yr}-${mo}-22`, count:2 },
+    { order_date: `${yr}-${mo}-05`, count: 2 },
+    { order_date: `${yr}-${mo}-10`, count: 1 },
+    { order_date: `${yr}-${mo}-15`, count: 3 },
+    { order_date: `${yr}-${mo}-18`, count: 1 },
+    { order_date: `${yr}-${mo}-22`, count: 2 }
   ];
 }
 
 function renderCalendar() {
-  document.getElementById('calTitle').textContent = `${KY_MONTHS[calMonth-1]} ${calYear}`;
-  const firstDay = new Date(calYear, calMonth-1, 1).getDay();
+  document.getElementById('calTitle').textContent = `${KY_MONTHS[calMonth - 1]} ${calYear}`;
+  const firstDay = new Date(calYear, calMonth - 1, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth, 0).getDate();
-  const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
-
-  // Monday-based offset
-  const offset = (firstDay === 0 ? 6 : firstDay - 1);
+  const todayStr = new Date().toISOString().split('T')[0];
+  const offset = firstDay === 0 ? 6 : firstDay - 1;
   const daysContainer = document.getElementById('calDays');
   let html = '';
 
-  for (let i = 0; i < offset; i++) html += `<div class="cal-day empty"></div>`;
+  for (let i = 0; i < offset; i++) html += '<div class="cal-day empty"></div>';
+
   for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${calYear}-${String(calMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dateStr = `${calYear}-${String(calMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const isToday = dateStr === todayStr;
     const hasOrders = calOrderDates[dateStr];
     const isSelected = dateStr === calSelectedDate;
     const offDay = isOffDay(dateStr);
-    html += `<div class="cal-day${isToday?' today':''}${hasOrders?' has-orders':''}${offDay?' off-day':''}${isSelected?' selected':''}" data-date="${dateStr}"
-      onclick="selectCalDay('${dateStr}', ${d}, this)">${d}</div>`;
+    html += `<div class="cal-day${isToday ? ' today' : ''}${hasOrders ? ' has-orders' : ''}${offDay ? ' off-day' : ''}${isSelected ? ' selected' : ''}" data-date="${dateStr}" onclick="selectCalDay('${dateStr}', ${d}, this)">${d}</div>`;
   }
+
   daysContainer.innerHTML = html;
-}
-
-async function toggleOffDayLegacy(dateStr, day) {
-  if (isOffDay(dateStr)) calOffDays = calOffDays.filter(d => d !== dateStr);
-  else calOffDays = [...calOffDays, dateStr].sort();
-  persistOffDays();
-  renderCalendar();
-  selectCalDay(dateStr, day);
-  showToast(isOffDay(dateStr) ? 'Кызыл күн белгиленди' : 'Кызыл күн алынды');
-}
-
-function clearOffDaysForMonthLegacy() {
-  const monthPrefix = `${calYear}-${String(calMonth).padStart(2,'0')}-`;
-  const next = calOffDays.filter(d => !d.startsWith(monthPrefix));
-  if (next.length === calOffDays.length) {
-    showToast('Бул айда белгиленген кызыл күндөр жок', 'error');
-    return;
-  }
-  calOffDays = next;
-  persistOffDays();
-  renderCalendar();
-  if (calSelectedDate && calSelectedDate.startsWith(monthPrefix)) {
-    selectCalDay(calSelectedDate, Number(calSelectedDate.slice(-2)));
-  }
-  showToast('Айдагы кызыл күндөр тазаланды');
-}
-
-async function selectCalDayLegacy(dateStr, day, dayEl = null) {
-  calSelectedDate = dateStr;
-  document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
-  const selectedEl = dayEl || document.querySelector(`.cal-day[data-date="${dateStr}"]`);
-  if (selectedEl) selectedEl.classList.add('selected');
-
-  const panel = document.getElementById('calOrdersPanel');
-  const label = document.getElementById('calSelectedDate');
-  const container = document.getElementById('calDayOrders');
-  const isManualOffDay = isOffDay(dateStr);
-
-  label.textContent = `${day} ${KY_MONTHS[calMonth-1]} ${calYear}`;
-  panel.style.display = 'block';
-
-  const res = await apiFetch(`/orders?date=${dateStr}`);
-  const orders = res.success ? res.data : allOrders.filter(o => o.order_date && o.order_date.startsWith(dateStr.substring(0,10)));
-  const offDayCard = `
-    <div style="padding:12px;background:${isManualOffDay ? 'rgba(239,68,68,0.12)' : 'rgba(59,130,246,0.08)'};border-radius:12px;margin-bottom:10px;border:1px solid ${isManualOffDay ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.18)'}">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:${isManualOffDay ? '#fca5a5' : '#93c5fd'}">${isManualOffDay ? 'Бул күн дем алыш катары белгиленген' : 'Бул күндү дем алыш катары белгилей аласыз'}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Кызыл күндөр ушул түзмөктө сакталат.</div>
-        </div>
-        <button class="${isManualOffDay ? 'btn-ghost' : 'btn-danger'}" onclick="toggleOffDay('${dateStr}', ${day})">${isManualOffDay ? 'Кызыл белгини алып салуу' : 'Кызыл күн кылып белгилөө'}</button>
-      </div>
-    </div>
-  `;
-
-  if (!orders.length) {
-    container.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:8px 0">Бул күнгө буйрутмалар жок</div>`;
-    return;
-  }
-  container.innerHTML = offDayCard + orders.map(o => `
-    <div style="padding:10px;background:var(--card2);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:13px;font-weight:600">${o.client_name}</div>
-        ${statusBadge(o.status)}
-      </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px">${o.service_type} · ${fmtPrice(o.price)}</div>
-      <div style="font-size:11px;color:#9ca3af;margin-top:2px">📞 ${o.phone}</div>
-    </div>
-  `).join('');
-}
-
-async function selectCalDay(dateStr, day, dayEl = null) {
-  calSelectedDate = dateStr;
-  document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
-  const selectedEl = dayEl || document.querySelector(`.cal-day[data-date="${dateStr}"]`);
-  if (selectedEl) selectedEl.classList.add('selected');
-
-  const panel = document.getElementById('calOrdersPanel');
-  const label = document.getElementById('calSelectedDate');
-  const container = document.getElementById('calDayOrders');
-  const isManualOffDay = isOffDay(dateStr);
-
-  label.textContent = `${day} ${KY_MONTHS[calMonth-1]} ${calYear}`;
-  panel.style.display = 'block';
-
-  const res = await apiFetch(`/orders?date=${dateStr}`);
-  const orders = res.success ? res.data : allOrders.filter(o => o.order_date && o.order_date.startsWith(dateStr.substring(0,10)));
-  const offDayCard = `
-    <div style="padding:12px;background:${isManualOffDay ? 'rgba(239,68,68,0.12)' : 'rgba(59,130,246,0.08)'};border-radius:12px;margin-bottom:10px;border:1px solid ${isManualOffDay ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.18)'}">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:${isManualOffDay ? '#fca5a5' : '#93c5fd'}">${isManualOffDay ? 'Бул күн дем алыш катары белгиленген' : 'Бул күндү дем алыш катары белгилей аласыз'}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Кызыл күндөр ушул түзмөктө сакталат.</div>
-        </div>
-        <button class="${isManualOffDay ? 'btn-ghost' : 'btn-danger'}" onclick="toggleOffDay('${dateStr}', ${day})">${isManualOffDay ? 'Кызыл белгини алып салуу' : 'Кызыл күн кылып белгилөө'}</button>
-      </div>
-    </div>
-  `;
-
-  if (!orders.length) {
-    container.innerHTML = offDayCard + `<div style="color:var(--muted);font-size:13px;padding:8px 0">Бул күнгө буйрутмалар жок</div>`;
-    return;
-  }
-
-  container.innerHTML = offDayCard + orders.map(o => `
-    <div style="padding:10px;background:var(--card2);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:13px;font-weight:600">${o.client_name}</div>
-        ${statusBadge(o.status)}
-      </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px">${o.service_type} · ${fmtPrice(o.price)}</div>
-      <div style="font-size:11px;color:#9ca3af;margin-top:2px">📞 ${o.phone}</div>
-    </div>
-  `).join('');
 }
 
 async function toggleOffDay(dateStr, day) {
@@ -1955,31 +1882,35 @@ async function toggleOffDay(dateStr, day) {
       ? { method: 'DELETE' }
       : { method: 'POST', body: JSON.stringify({ off_date: dateStr }) }
   );
+
   if (!res.success) {
-    showToast('Кызыл күндү сактоодо ката кетти', 'error');
+    showToast('Не удалось сохранить нерабочий день', 'error');
     return;
   }
+
   await loadCalendarDates();
   await selectCalDay(dateStr, day);
-  showToast(removing ? 'Кызыл күн алынды' : 'Кызыл күн белгиленди');
+  showToast(removing ? 'Нерабочий день снят' : 'Нерабочий день отмечен');
 }
 
 async function clearOffDaysForMonth() {
-  const monthPrefix = `${calYear}-${String(calMonth).padStart(2,'0')}-`;
+  const monthPrefix = `${calYear}-${String(calMonth).padStart(2, '0')}-`;
   if (!calOffDays.some(d => d.startsWith(monthPrefix))) {
-    showToast('Бул айда белгиленген кызыл күндөр жок', 'error');
+    showToast('В этом месяце нет отмеченных нерабочих дней', 'error');
     return;
   }
+
   const res = await apiFetch(`/orders/calendar/off-days?month=${calMonth}&year=${calYear}`, { method: 'DELETE' });
   if (!res.success) {
-    showToast('Кызыл күндөрдү тазалоодо ката кетти', 'error');
+    showToast('Не удалось очистить нерабочие дни', 'error');
     return;
   }
+
   await loadCalendarDates();
   if (calSelectedDate && calSelectedDate.startsWith(monthPrefix)) {
     await selectCalDay(calSelectedDate, Number(calSelectedDate.slice(-2)));
   }
-  showToast('Айдагы кызыл күндөр тазаланды');
+  showToast('Нерабочие дни за месяц очищены');
 }
 
 async function selectCalDay(dateStr, day, dayEl = null) {
@@ -2005,16 +1936,16 @@ async function selectCalDay(dateStr, day, dayEl = null) {
     <div style="padding:12px;background:${isManualOffDay ? 'rgba(239,68,68,0.12)' : 'rgba(59,130,246,0.08)'};border-radius:12px;margin-bottom:10px;border:1px solid ${isManualOffDay ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.18)'}">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
         <div>
-          <div style="font-size:13px;font-weight:700;color:${isManualOffDay ? '#fca5a5' : '#93c5fd'}">${isManualOffDay ? 'Бул күн дем алыш катары белгиленген' : 'Бул күндү дем алыш катары белгилей аласыз'}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">Маалымат PostgreSQL базасында сакталат.</div>
+          <div style="font-size:13px;font-weight:700;color:${isManualOffDay ? '#fca5a5' : '#93c5fd'}">${isManualOffDay ? 'Этот день отмечен как нерабочий' : 'Вы можете отметить этот день как нерабочий'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Данные хранятся в PostgreSQL.</div>
         </div>
-        <button class="${isManualOffDay ? 'btn-ghost' : 'btn-danger'}" onclick="toggleOffDay('${dateStr}', ${day})">${isManualOffDay ? 'Кызыл белгини алып салуу' : 'Кызыл күн кылып белгилөө'}</button>
+        <button class="${isManualOffDay ? 'btn-ghost' : 'btn-danger'}" onclick="toggleOffDay('${dateStr}', ${day})">${isManualOffDay ? 'Снять отметку' : 'Отметить нерабочим'}</button>
       </div>
     </div>
   `;
 
   if (!orders.length) {
-    container.innerHTML = offDayCard + `<div style="color:var(--muted);font-size:13px;padding:8px 0">Бул күнгө буйрутмалар жок</div>`;
+    container.innerHTML = offDayCard + '<div style="color:var(--muted);font-size:13px;padding:8px 0">На этот день заказов нет</div>';
     return;
   }
 
@@ -2035,7 +1966,7 @@ async function loadCalMonthOrders() {
   const orders = res.success ? res.data : getDemoOrders().slice(0, 4);
   const container = document.getElementById('calMonthOrders');
   if (!orders.length) {
-    container.innerHTML = `<div class="empty-state" style="padding:16px"><div class="sub">Буйрутмалар жок</div></div>`;
+    container.innerHTML = '<div class="empty-state" style="padding:16px"><div class="sub">Заказов нет</div></div>';
     return;
   }
   container.innerHTML = orders.map(o => `
