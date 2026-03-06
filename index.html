@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Media — CRM Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0b0d1a;
+      --card: #111426;
+      --card2: #171b2f;
+      --border: rgba(255,255,255,0.07);
+      --text: #e8eaf6;
+      --muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59,130,246,0.15);
+      --mint: #10b981;
+      --coral: #ef4444;
+      --amber: #f59e0b;
+      --violet: #8b5cf6;
+      --sidebar-w: 260px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo .brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .sidebar-logo .tagline {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 8px 6px;
+      margin-top: 8px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .2s;
+      font-size: 14px;
+      font-weight: 500;
+      color: #9ca3af;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .nav-item.active {
+      background: var(--accent-glow);
+      color: #60a5fa;
+      box-shadow: inset 0 0 0 1px rgba(59,130,246,0.2);
+    }
+    .nav-item .icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      background: rgba(255,255,255,0.04);
+      flex-shrink: 0;
+    }
+    .nav-item.active .icon { background: rgba(59,130,246,0.15); }
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .user-avatar {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: white;
+      flex-shrink: 0;
+    }
+    .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .user-role { font-size: 11px; color: var(--muted); }
+
+    /* ── Main ── */
+    .main-area {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .topbar {
+      height: 64px;
+      background: rgba(11,13,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0; z-index: 50;
+    }
+    .topbar-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-ghost {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all .2s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.05); color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .btn-primary {
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: var(--accent);
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all .2s;
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(59,130,246,0.3); }
+    .btn-danger {
+      padding: 7px 14px; border-radius: 8px;
+      background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.2);
+      color: #f87171; cursor: pointer; font-size: 12px; font-weight: 600; transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+    .btn-success {
+      padding: 7px 14px; border-radius: 8px;
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.2);
+      color: #34d399; cursor: pointer; font-size: 12px; font-weight: 600; transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-success:hover { background: rgba(16,185,129,0.2); }
+
+    /* ── Page Content ── */
+    .page { padding: 28px; display: none; animation: fadeIn .3s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.12); }
+    .card-sm {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    /* ── Stat Cards ── */
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: all .25s;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      opacity: 0.06;
+      transform: translate(20px, -20px);
+    }
+    .stat-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.12); }
+    .stat-card .stat-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+    .stat-card .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+    .stat-card .stat-label {
+      font-size: 12px; color: var(--muted);
+      margin-top: 6px; font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    .stat-card .stat-change {
+      font-size: 12px; font-weight: 600;
+      margin-top: 10px;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 6px;
+    }
+
+    /* ── Status Badges ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+    }
+    .badge-booked { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+    .badge-deposit { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+    .badge-progress { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .badge-completed { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+    .badge-free { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+    .badge-in-use { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+    /* ── Order Cards ── */
+    .order-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      transition: all .25s;
+      cursor: default;
+    }
+    .order-card:hover { border-color: rgba(255,255,255,0.14); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .order-client { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+    .order-service { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .order-price { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #60a5fa; }
+    .order-date { font-size: 12px; color: var(--muted); }
+    .order-actions { display: flex; gap: 6px; margin-top: 12px; }
+
+    /* ── Kanban ── */
+    .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; min-height: 400px; }
+    .kanban-col { background: var(--card2); border-radius: 14px; padding: 14px; border: 1px solid var(--border); }
+    .kanban-col-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .kanban-col-title { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; }
+    .kanban-count {
+      width: 22px; height: 22px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+    .kanban-cards { display: flex; flex-direction: column; gap: 10px; min-height: 60px; }
+
+    /* ── Equipment Cards ── */
+    .equipment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+    .equipment-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all .25s;
+    }
+    .equipment-card:hover { border-color: rgba(255,255,255,0.14); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+    .equipment-img {
+      width: 100%; height: 160px;
+      object-fit: cover;
+      background: var(--card2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px;
+    }
+    .equipment-body { padding: 16px; }
+    .equipment-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+    .equipment-cat { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .equipment-desc { font-size: 12px; color: #9ca3af; margin-top: 8px; line-height: 1.5; }
+
+    /* ── Services ── */
+    .service-tabs { display: flex; gap: 6px; margin-bottom: 22px; }
+    .service-tab {
+      padding: 8px 18px; border-radius: 8px;
+      background: var(--card2); border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; font-size: 13px; font-weight: 600;
+      transition: all .2s;
+    }
+    .service-tab.active { background: var(--accent-glow); color: #60a5fa; border-color: rgba(59,130,246,0.25); }
+    .service-tab:hover:not(.active) { background: rgba(255,255,255,0.05); color: var(--text); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      transition: all .25s;
+    }
+    .service-card:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-1px); }
+    .service-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+    .service-desc { font-size: 13px; color: #9ca3af; margin-top: 6px; line-height: 1.5; }
+    .service-price { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: #60a5fa; margin-top: 12px; }
+    .service-duration { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* ── Calendar ── */
+    .calendar-wrapper { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+    .calendar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .calendar-month-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+    .cal-nav { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; font-size: 14px; }
+    .cal-nav:hover { background: rgba(255,255,255,0.07); }
+    .calendar-grid { padding: 16px 24px 24px; }
+    .cal-week-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 10px; }
+    .cal-week-day { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--muted); text-transform: uppercase; padding: 6px 0; }
+    .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer;
+      position: relative; transition: all .18s; color: var(--text);
+    }
+    .cal-day:hover { background: rgba(255,255,255,0.06); }
+    .cal-day.empty { cursor: default; }
+    .cal-day.today {
+      background: var(--accent-glow);
+      color: #60a5fa;
+      font-weight: 700;
+      box-shadow: inset 0 0 0 1px rgba(59,130,246,0.3);
+    }
+    .cal-day.has-orders::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+    .cal-day.selected { background: rgba(59,130,246,0.2); color: #93c5fd; }
+    .cal-day.off-day {
+      background: rgba(239,68,68,0.14);
+      color: #fca5a5;
+      box-shadow: inset 0 0 0 1px rgba(239,68,68,0.28);
+    }
+    .cal-day.off-day.has-orders::after { background: #fda4af; }
+    .cal-day.off-day.selected {
+      background: rgba(239,68,68,0.22);
+      color: #fecaca;
+    }
+    .cal-day.other-month { color: rgba(255,255,255,0.2); }
+    .cal-orders-panel { padding: 0 24px 24px; }
+    .cal-orders-date { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #60a5fa; }
+    .calendar-layout { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+    .calendar-sidebar { align-self: start; }
+    .calendar-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .calendar-hint { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .calendar-legend {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+
+    /* ── Calculator ── */
+    .calc-wrapper {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .calc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px;
+    }
+    .calc-result {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1));
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .calc-total { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* ── Form Fields ── */
+    .field-group { margin-bottom: 16px; }
+    .field-label { font-size: 12px; font-weight: 600; color: #9ca3af; margin-bottom: 6px; display: block; letter-spacing: 0.3px; }
+    .field-input {
+      width: 100%; padding: 10px 14px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text); font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color .2s;
+      outline: none;
+    }
+    .field-input:focus { border-color: rgba(59,130,246,0.4); box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
+    .field-input option { background: #1e2340; }
+    textarea.field-input { resize: vertical; min-height: 80px; }
+    .file-picker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px dashed rgba(59,130,246,0.35);
+      background: rgba(59,130,246,0.08);
+      color: #93c5fd;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
+    }
+    .file-picker:hover { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.5); }
+    .file-input-hidden { display: none; }
+    .photo-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .photo-preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--card2);
+      border: 1px solid var(--border);
+    }
+    .photo-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-preview-remove {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(11,13,26,0.78);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .field-help { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      width: 100%; max-width: 540px;
+      max-height: 90vh; overflow-y: auto;
+      transform: scale(0.95) translateY(10px);
+      transition: transform .25s;
+    }
+    .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+    .modal-header {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
+    .modal-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all .2s; }
+    .modal-close:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .modal-body { padding: 22px 24px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* ── Section Headers ── */
+    .section-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+    .section-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    /* ── Upcoming list ── */
+    .upcoming-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px; border-radius: 10px;
+      transition: background .15s; cursor: default;
+    }
+    .upcoming-item:hover { background: rgba(255,255,255,0.03); }
+    .upcoming-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .upcoming-client { font-size: 13px; font-weight: 600; }
+    .upcoming-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .upcoming-date { font-size: 11px; color: var(--muted); margin-left: auto; white-space: nowrap; text-align: right; }
+
+    /* ── Grid helpers ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .kanban { grid-template-columns: repeat(2,1fr); }
+      .grid-4 { grid-template-columns: repeat(2,1fr); }
+      .calendar-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { transform: translateX(-260px); }
+      .sidebar.open { transform: translateX(0); width: 260px; }
+      #menuBtn { display: inline-flex !important; }
+      .topbar {
+        height: auto;
+        min-height: 64px;
+        padding: 14px 16px;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .topbar-actions { width: 100%; justify-content: flex-end; }
+      .page { padding: 18px 14px 28px; }
+      .card, .calc-card { padding: 16px; }
+      .service-tabs { overflow-x: auto; padding-bottom: 4px; }
+      .service-tab { white-space: nowrap; }
+      .calendar-header, .calendar-grid, .cal-orders-panel, .modal-body, .modal-header, .modal-footer { padding-left: 16px; padding-right: 16px; }
+      .calendar-tools { align-items: stretch; }
+      .calendar-tools .btn-danger { width: 100%; }
+      .cal-day { font-size: 12px; border-radius: 8px; }
+      .modal-overlay { padding: 0; }
+      .modal-box {
+        max-width: none;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+      }
+      .modal-footer {
+        position: sticky;
+        bottom: 0;
+        background: var(--card);
+        justify-content: stretch;
+      }
+      .modal-footer > * { flex: 1; }
+      .photo-preview-grid { grid-template-columns: repeat(3, 1fr); }
+      #statusOverview { grid-template-columns: repeat(2,1fr) !important; }
+      .kanban { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .topbar-title { font-size: 16px; }
+      .btn-primary, .btn-ghost, .btn-danger, .btn-success { min-height: 42px; }
+      .calendar-month-title { font-size: 16px; }
+      .cal-week-day { font-size: 10px; }
+      .photo-preview-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── Notification ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 18px;
+      font-size: 13px; z-index: 999;
+      transform: translateY(80px); opacity: 0;
+      transition: all .3s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      max-width: 320px;
+    }
+    .toast.show { transform: none; opacity: 1; }
+    .toast.success { border-color: rgba(16,185,129,0.3); }
+    .toast.error { border-color: rgba(239,68,68,0.3); }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 14px; opacity: 0.4; }
+    .empty-state .title { font-size: 15px; font-weight: 600; color: #6b7280; margin-bottom: 6px; }
+    .empty-state .sub { font-size: 13px; }
+
+    /* ── Progress bar ── */
+    .progress-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--violet)); transition: width .5s; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    .range-input {
+      width: 100%; -webkit-appearance: none; height: 4px;
+      border-radius: 99px; background: var(--card2);
+      outline: none; cursor: pointer;
+    }
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--accent); cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">Pixel Media</div>
+      <div class="tagline">Креатив Студиясы</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Негизги</div>
+      <div class="nav-item active" onclick="navigate('dashboard', this)">
+        <div class="icon">📊</div> Башкы Панел
+      </div>
+      <div class="nav-item" onclick="navigate('orders', this)">
+        <div class="icon">📋</div> Буйрутмалар
+      </div>
+      <div class="nav-section-label" style="margin-top:16px">Контент</div>
+      <div class="nav-item" onclick="navigate('equipment', this)">
+        <div class="icon">🎥</div> Жабдуулар
+      </div>
+      <div class="nav-item" onclick="navigate('services', this)">
+        <div class="icon">✨</div> Кызматтар
+      </div>
+      <div class="nav-section-label" style="margin-top:16px">Куралдар</div>
+      <div class="nav-item" onclick="navigate('calendar', this)">
+        <div class="icon">📅</div> Календарь
+      </div>
+      <div class="nav-item" onclick="navigate('calculator', this)">
+        <div class="icon">🧮</div> Калькулятор
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar">PM</div>
+        <div>
+          <div class="user-name">Pixel Media</div>
+          <div class="user-role">Администратор</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN AREA ═══ -->
+  <div class="main-area">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn-ghost" style="display:none;padding:8px" id="menuBtn" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title" id="pageTitle">Башкы Панел</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-primary" id="headerActionBtn" onclick="openAddModal()">
+          <span>+</span> <span id="headerActionLabel">Буйрутма кошуу</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="page active" id="page-dashboard">
+      <div style="margin-bottom:24px">
+        <div class="section-title">Кош келдиңиз 👋</div>
+        <div class="section-sub">Pixel Media CRM — бүгүнкү абал</div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="grid-4" style="margin-bottom:24px" id="statCards">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(59,130,246,0.12);color:#60a5fa">📋</div>
+          <div class="stat-value" id="statTotal">—</div>
+          <div class="stat-label">Жалпы буйрутмалар</div>
+          <div class="stat-change" style="background:rgba(59,130,246,0.1);color:#60a5fa">Баары</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(59,130,246,0.12);color:#60a5fa">⚡</div>
+          <div class="stat-value" id="statProgress">—</div>
+          <div class="stat-label">Иштелүүдө</div>
+          <div class="stat-change" style="background:rgba(59,130,246,0.1);color:#60a5fa">Активдүү</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#34d399">✅</div>
+          <div class="stat-value" id="statCompleted">—</div>
+          <div class="stat-label">Аяктаган</div>
+          <div class="stat-change" style="background:rgba(16,185,129,0.1);color:#34d399">Бүтүрүлгөн</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(139,92,246,0.1);color:#a78bfa">🔖</div>
+          <div class="stat-value" id="statBooked">—</div>
+          <div class="stat-label">Брондолгон</div>
+          <div class="stat-change" style="background:rgba(139,92,246,0.1);color:#a78bfa">Жаңы</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:24px">
+        <!-- Revenue Card -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div>
+              <div style="font-size:13px;color:var(--muted);font-weight:600;letter-spacing:0.3px">ЖАЛПЫ СУММА</div>
+              <div class="stat-value" id="statRevenue" style="font-size:32px;margin-top:6px">—</div>
+            </div>
+            <div style="width:48px;height:48px;border-radius:14px;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;font-size:22px">💰</div>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Аванс / задаток: <span id="statDeposit" style="color:#fbbf24">—</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:65%" id="revenueBar"></div></div>
+        </div>
+
+        <!-- Upcoming -->
+        <div class="card">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;font-family:'Syne',sans-serif">Жакынкы буйрутмалар</div>
+          <div id="upcomingList">
+            <div class="empty-state" style="padding:20px">
+              <div class="icon" style="font-size:32px">📅</div>
+              <div class="sub">Жакынкы буйрутмалар жок</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status overview -->
+      <div class="card">
+        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:18px">Статус боюнча</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px" id="statusOverview">
+          <div class="card-sm" style="text-align:center">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">БРОНДОЛГОН</div>
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#a78bfa" id="ov-booked">0</div>
+          </div>
+          <div class="card-sm" style="text-align:center">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">АВАНС</div>
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fbbf24" id="ov-deposit">0</div>
+          </div>
+          <div class="card-sm" style="text-align:center">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">ИШТЕЛҮҮДӨ</div>
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#60a5fa" id="ov-progress">0</div>
+          </div>
+          <div class="card-sm" style="text-align:center">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600">АЯКТАГАН</div>
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#34d399" id="ov-completed">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ORDERS ═══ -->
+    <div class="page" id="page-orders">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+        <div>
+          <div class="section-title">Буйрутмалар</div>
+          <div class="section-sub">Бардык буйрутмаларды башкаруу</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select class="field-input" id="orderFilterStatus" onchange="loadOrders()" style="width:160px;padding:8px 12px">
+            <option value="">Баары</option>
+            <option value="booked">Брондолгон</option>
+            <option value="deposit">Аванс</option>
+            <option value="in_progress">Иштелүүдө</option>
+            <option value="completed">Аяктаган</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Kanban Board -->
+      <div class="kanban" id="kanbanBoard">
+        <div class="kanban-col" id="col-booked">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#a78bfa">🔖 Брондолгон</div>
+            <div class="kanban-count" style="background:rgba(139,92,246,0.15);color:#a78bfa" id="cnt-booked">0</div>
+          </div>
+          <div class="kanban-cards" id="cards-booked"></div>
+        </div>
+        <div class="kanban-col" id="col-deposit">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#fbbf24">💳 Аванс</div>
+            <div class="kanban-count" style="background:rgba(245,158,11,0.1);color:#fbbf24" id="cnt-deposit">0</div>
+          </div>
+          <div class="kanban-cards" id="cards-deposit"></div>
+        </div>
+        <div class="kanban-col" id="col-in_progress">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#60a5fa">⚡ Иштелүүдө</div>
+            <div class="kanban-count" style="background:rgba(59,130,246,0.12);color:#60a5fa" id="cnt-in_progress">0</div>
+          </div>
+          <div class="kanban-cards" id="cards-in_progress"></div>
+        </div>
+        <div class="kanban-col" id="col-completed">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#34d399">✅ Аяктаган</div>
+            <div class="kanban-count" style="background:rgba(16,185,129,0.1);color:#34d399" id="cnt-completed">0</div>
+          </div>
+          <div class="kanban-cards" id="cards-completed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ EQUIPMENT ═══ -->
+    <div class="page" id="page-equipment">
+      <div style="margin-bottom:24px">
+        <div class="section-title">Жабдуулар</div>
+        <div class="section-sub">Студия техникасын башкаруу</div>
+      </div>
+      <div class="equipment-grid" id="equipmentGrid">
+        <div class="empty-state"><div class="icon">🎥</div><div class="title">Жабдуулар жок</div><div class="sub">Жаңы жабдуу кошуу</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ SERVICES ═══ -->
+    <div class="page" id="page-services">
+      <div style="margin-bottom:22px">
+        <div class="section-title">Кызматтар</div>
+        <div class="section-sub">Студия кызматтарын башкаруу</div>
+      </div>
+      <div class="service-tabs">
+        <div class="service-tab active" onclick="filterServices('all',this)">Баары</div>
+        <div class="service-tab" onclick="filterServices('video',this)">🎬 Видео</div>
+        <div class="service-tab" onclick="filterServices('photo',this)">📷 Фото</div>
+        <div class="service-tab" onclick="filterServices('design',this)">🎨 Дизайн</div>
+      </div>
+      <div class="services-grid" id="servicesGrid">
+        <div class="empty-state"><div class="icon">✨</div><div class="title">Кызматтар жок</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ CALENDAR ═══ -->
+    <div class="page" id="page-calendar">
+      <div style="margin-bottom:24px">
+        <div class="section-title">Календарь</div>
+        <div class="section-sub">Буйрутмалардын жылнаамасы</div>
+      </div>
+      <div class="calendar-layout">
+        <div class="calendar-wrapper">
+          <div class="calendar-header">
+            <button class="cal-nav" onclick="calPrev()">‹</button>
+            <div class="calendar-month-title" id="calTitle">—</div>
+            <button class="cal-nav" onclick="calNext()">›</button>
+          </div>
+          <div class="calendar-grid">
+            <div class="calendar-tools">
+              <div class="calendar-legend">
+                <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Р§С‹РіС‹С€ РєТЇРЅ</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span>Р‘СѓР№СЂСѓС‚РјР°Р»СѓСѓ РєТЇРЅ</span>
+              </div>
+              <button class="btn-danger" onclick="clearOffDaysForMonth()">РђР№РґС‹РЅ РєС‹Р·С‹Р» РєТЇРЅРґУ©СЂС–РЅ С‚Р°Р·Р°Р»РѕРѕ</button>
+            </div>
+            <div class="calendar-hint">РљСЋРЅРґС– Р±Р°СЃС‹Рї С‚Р°РЅРґР°Рї, Р°РЅРґР°РЅ РєРёР№РёРЅ С‡С‹РєРєР°РЅ РїР°РЅРµР»РґРµ РєС‹Р·С‹Р» РєТЇРЅ РєР°С‚Р°СЂС‹ Р±РµР»РіРёР»РµСЃРµТЈРёР·.</div>
+            <div class="cal-week-days">
+              <div class="cal-week-day">Дш</div>
+              <div class="cal-week-day">Шш</div>
+              <div class="cal-week-day">Ш</div>
+              <div class="cal-week-day">Бш</div>
+              <div class="cal-week-day">Жм</div>
+              <div class="cal-week-day" style="color:#f87171">Иш</div>
+              <div class="cal-week-day" style="color:#f87171">Жк</div>
+            </div>
+            <div class="cal-days" id="calDays"></div>
+          </div>
+          <div class="cal-orders-panel" id="calOrdersPanel" style="display:none">
+            <div class="divider"></div>
+            <div class="cal-orders-date" id="calSelectedDate"></div>
+            <div id="calDayOrders"></div>
+          </div>
+        </div>
+        <div class="card calendar-sidebar">
+          <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px">Бул айдагы буйрутмалар</div>
+          <div id="calMonthOrders">
+            <div class="empty-state" style="padding:20px"><div class="sub">Буйрутмалар жок</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CALCULATOR ═══ -->
+    <div class="page" id="page-calculator">
+      <div style="margin-bottom:24px">
+        <div class="section-title">Калькулятор</div>
+        <div class="section-sub">Кызмат наркын эсептөө</div>
+      </div>
+      <div class="calc-wrapper">
+        <div class="calc-card">
+          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:22px;color:#60a5fa">🧮 Стоимостту эсептөө</div>
+
+          <div class="field-group">
+            <label class="field-label">Кызматты тандаңыз</label>
+            <select class="field-input" id="calcService" onchange="calcUpdate()">
+              <option value="0">Тандаңыз...</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Убактысы (саат): <span id="calcHoursVal" style="color:#60a5fa">2</span></label>
+            <input type="range" class="range-input" id="calcHours" min="1" max="24" value="2" oninput="document.getElementById('calcHoursVal').textContent=this.value;calcUpdate()" />
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px"><span>1 саат</span><span>24 саат</span></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:14px;letter-spacing:0.5px">КОШУМЧА ОПЦИЯЛАР</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+            <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;transition:all .2s" id="opt-drone" onclick="toggleCalcOpt('drone',5000,this)">
+              <span style="font-size:18px">🚁</span> Дрон (+5,000)
+              <input type="checkbox" id="chk-drone" style="margin-left:auto" onchange="calcUpdate()">
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;transition:all .2s" id="opt-stabilizer" onclick="toggleCalcOpt('stabilizer',3000,this)">
+              <span style="font-size:18px">🎬</span> Стаб (+3,000)
+              <input type="checkbox" id="chk-stabilizer" style="margin-left:auto" onchange="calcUpdate()">
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;transition:all .2s" id="opt-lighting" onclick="toggleCalcOpt('lighting',2000,this)">
+              <span style="font-size:18px">💡</span> Жарык (+2,000)
+              <input type="checkbox" id="chk-lighting" style="margin-left:auto" onchange="calcUpdate()">
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;transition:all .2s" id="opt-color" onclick="toggleCalcOpt('color',4000,this)">
+              <span style="font-size:18px">🎨</span> Колоркор (+4,000)
+              <input type="checkbox" id="chk-color" style="margin-left:auto" onchange="calcUpdate()">
+            </label>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="field-group">
+            <label class="field-label">Техника колдонуу</label>
+            <select class="field-input" id="calcEquipment" onchange="calcUpdate()">
+              <option value="0">Жок</option>
+              <option value="2000">Sony A7 III (+2,000/саат)</option>
+              <option value="1500">DJI Ronin-S (+1,500/саат)</option>
+              <option value="3000">Толук комплект (+3,000/саат)</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Скидка (%)</label>
+            <input type="number" class="field-input" id="calcDiscount" min="0" max="100" value="0" oninput="calcUpdate()" placeholder="0" />
+          </div>
+
+          <!-- Result -->
+          <div class="calc-result">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:1px">ЖЫЙЫНТЫК СУММА</div>
+            <div class="calc-total" id="calcTotal">0 сом</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:8px" id="calcBreakdown"></div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button class="btn-primary" style="flex:1;justify-content:center;padding:12px" onclick="applyToOrder()">
+              ✓ Буйрутмага кошуу
+            </button>
+            <button class="btn-ghost" style="padding:12px 16px" onclick="resetCalc()">↺ Тазалоо</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main-area -->
+</div><!-- end layout -->
+
+<!-- ═══ ORDER MODAL ═══ -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="orderModalTitle">Буйрутма кошуу</div>
+      <button class="modal-close" onclick="closeModal('orderModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="orderEditId" />
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Кардардын аты *</label>
+          <input type="text" class="field-input" id="f-client_name" placeholder="Айгүл Асанова" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Телефон *</label>
+          <input type="text" class="field-input" id="f-phone" placeholder="+996 700 123 456" />
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Кызмат түрү *</label>
+          <select class="field-input" id="f-service_type">
+            <option value="">Тандаңыз...</option>
+            <option value="Клип тартуу">🎬 Клип тартуу</option>
+            <option value="Корпоратив видео">📹 Корпоратив видео</option>
+            <option value="Фото сессия">📷 Фото сессия</option>
+            <option value="Продукт фото">🛍 Продукт фото</option>
+            <option value="Логотип дизайн">🎨 Логотип дизайн</option>
+            <option value="Социалдык медиа дизайн">📱 SMM Дизайн</option>
+            <option value="Башка">Башка</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Буйрутма датасы *</label>
+          <input type="date" class="field-input" id="f-order_date" />
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Баасы (сом) *</label>
+          <input type="number" class="field-input" id="f-price" placeholder="15000" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Аванс суммасы (сом)</label>
+          <input type="number" class="field-input" id="f-deposit" placeholder="5000" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Статус</label>
+        <select class="field-input" id="f-status">
+          <option value="booked">🔖 Брондолгон</option>
+          <option value="deposit">💳 Аванс</option>
+          <option value="in_progress">⚡ Иштелүүдө</option>
+          <option value="completed">✅ Аяктаган / Төлөнгөн</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Комментарий</label>
+        <textarea class="field-input" id="f-comment" placeholder="Буйрутма боюнча кошумча маалымат..."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Сүрөттөр (URL же base64)</label>
+        <input type="text" class="field-input" id="f-photos" placeholder="Сүрөт URL же сүрөттү жүктөңүз" oninput="syncOrderPhotoUrls()" />
+        <label class="file-picker" for="f-photos-upload">
+          <span>📷</span>
+          <span>Телефондон сүрөт тандоо же тартуу</span>
+        </label>
+        <input type="file" class="file-input-hidden" id="f-photos-upload" accept="image/*" capture="environment" multiple onchange="handleOrderPhotoUpload(event)" />
+        <div class="field-help">URL кошсоңуз болот же телефондон галерея/камера аркылуу сүрөт жүктөйсүз. Бир нече сүрөт колдонот.</div>
+        <div class="photo-preview-grid" id="orderPhotoPreview"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('orderModal')">Жокко чыгаруу</button>
+      <button class="btn-primary" onclick="saveOrder()">💾 Сактоо</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EQUIPMENT MODAL ═══ -->
+<div class="modal-overlay" id="equipmentModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="equipModalTitle">Жабдуу кошуу</div>
+      <button class="modal-close" onclick="closeModal('equipmentModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="equip-id" />
+      <div class="field-group">
+        <label class="field-label">Аппараттын аты *</label>
+        <input type="text" class="field-input" id="equip-name" placeholder="Sony A7 III" />
+      </div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Категория</label>
+          <select class="field-input" id="equip-category">
+            <option value="Камера">📷 Камера</option>
+            <option value="Объектив">🔭 Объектив</option>
+            <option value="Стабилизатор">🎬 Стабилизатор</option>
+            <option value="Жарык">💡 Жарык</option>
+            <option value="Дрон">🚁 Дрон</option>
+            <option value="Компьютер">💻 Компьютер</option>
+            <option value="Башка">Башка</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Статус</label>
+          <select class="field-input" id="equip-status">
+            <option value="free">🟢 Бош</option>
+            <option value="in_use">🔴 Колдонулууда</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Сүрөт URL (же эмодзи)</label>
+        <input type="text" class="field-input" id="equip-photo" placeholder="https://... же 📷" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Сүрөттөмө</label>
+        <textarea class="field-input" id="equip-desc" placeholder="Аппарат боюнча маалымат..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('equipmentModal')">Жокко чыгаруу</button>
+      <button class="btn-primary" onclick="saveEquipment()">💾 Сактоо</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SERVICE MODAL ═══ -->
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="svcModalTitle">Кызмат кошуу</div>
+      <button class="modal-close" onclick="closeModal('serviceModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="svc-id" />
+      <div class="field-group">
+        <label class="field-label">Кызматтын аты *</label>
+        <input type="text" class="field-input" id="svc-name" placeholder="Клип тартуу" />
+      </div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Категория *</label>
+          <select class="field-input" id="svc-category">
+            <option value="video">🎬 Видео</option>
+            <option value="photo">📷 Фото</option>
+            <option value="design">🎨 Дизайн</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Баасы (сом) *</label>
+          <input type="number" class="field-input" id="svc-price" placeholder="15000" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Узактыгы</label>
+        <input type="text" class="field-input" id="svc-duration" placeholder="4-8 саат" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Сүрөттөмө</label>
+        <textarea class="field-input" id="svc-description" placeholder="Кызмат боюнча маалымат..."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Эскертүүлөр</label>
+        <textarea class="field-input" id="svc-notes" placeholder="Кошумча маалымат..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('serviceModal')">Жокко чыгаруу</button>
+      <button class="btn-primary" onclick="saveService()">💾 Сактоо</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+const API = window.location.protocol === 'file:' ? 'http://localhost:3001/api' : `${window.location.origin}/api`;
+
+// ── State ──────────────────────────────────────────────
+let allOrders = [];
+let allServices = [];
+let allEquipment = [];
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth() + 1;
+let calOrderDates = {};
+let calOffDays = [];
+let calSelectedDate = '';
+let currentPage = 'dashboard';
+let serviceFilter = 'all';
+let currentOrderPhotos = [];
+
+// ── Navigation ────────────────────────────────────────
+function navigate(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  if (el) el.classList.add('active');
+  currentPage = page;
+  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+
+  const titles = {
+    dashboard: 'Башкы Панел',
+    orders: 'Буйрутмалар',
+    equipment: 'Жабдуулар',
+    services: 'Кызматтар',
+    calendar: 'Календарь',
+    calculator: 'Калькулятор'
+  };
+  const actions = {
+    dashboard: { show: false },
+    orders: { show: true, label: 'Буйрутма кошуу' },
+    equipment: { show: true, label: 'Жабдуу кошуу' },
+    services: { show: true, label: 'Кызмат кошуу' },
+    calendar: { show: false },
+    calculator: { show: false }
+  };
+  document.getElementById('pageTitle').textContent = titles[page] || '';
+  const act = actions[page] || { show: false };
+  document.getElementById('headerActionBtn').style.display = act.show ? 'flex' : 'none';
+  document.getElementById('headerActionLabel').textContent = act.label || '';
+
+  if (page === 'dashboard') loadDashboard();
+  if (page === 'orders') loadOrders();
+  if (page === 'equipment') loadEquipment();
+  if (page === 'services') loadServices();
+  if (page === 'calendar') { loadCalendarDates(); renderCalendar(); }
+  if (page === 'calculator') loadCalcServices();
+}
+
+function openAddModal() {
+  if (currentPage === 'orders') openOrderModal();
+  else if (currentPage === 'equipment') openEquipmentModal();
+  else if (currentPage === 'services') openServiceModal();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function isOffDay(dateStr) {
+  return calOffDays.includes(dateStr);
+}
+
+function syncOrderPhotoInput() {
+  document.getElementById('f-photos').value = currentOrderPhotos.join(',');
+}
+
+function syncOrderPhotoUrls() {
+  const raw = document.getElementById('f-photos').value.trim();
+  currentOrderPhotos = raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : [];
+  renderOrderPhotoPreview();
+}
+
+function renderOrderPhotoPreview() {
+  const container = document.getElementById('orderPhotoPreview');
+  if (!container) return;
+  if (!currentOrderPhotos.length) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = currentOrderPhotos.map((src, index) => `
+    <div class="photo-preview-item">
+      <img src="${src}" alt="Photo ${index + 1}" />
+      <button type="button" class="photo-preview-remove" onclick="removeOrderPhoto(${index})">×</button>
+    </div>
+  `).join('');
+}
+
+function removeOrderPhoto(index) {
+  currentOrderPhotos.splice(index, 1);
+  syncOrderPhotoInput();
+  renderOrderPhotoPreview();
+}
+
+function handleOrderPhotoUpload(event) {
+  const files = Array.from(event.target.files || []).filter(file => file.type.startsWith('image/'));
+  if (!files.length) return;
+  Promise.all(files.map(file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  }))).then(images => {
+    currentOrderPhotos = currentOrderPhotos.concat(images.filter(Boolean));
+    syncOrderPhotoInput();
+    renderOrderPhotoPreview();
+    event.target.value = '';
+  }).catch(() => {
+    showToast('Сүрөт жүктөөдө ката кетти', 'error');
+  });
+}
+
+// ── API Helpers ───────────────────────────────────────
+async function apiFetch(url, opts = {}) {
+  try {
+    const r = await fetch(API + url, {
+      headers: { 'Content-Type': 'application/json', ...opts.headers },
+      ...opts
+    });
+    return await r.json();
+  } catch (e) {
+    // Demo mode - return mock data
+    return { success: false, error: 'Demo mode', _demo: true };
+  }
+}
+
+// ── Toast ─────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'success' ? '✓ ' : '✗ ') + msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Modal helpers ─────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+// ── Format helpers ────────────────────────────────────
+function fmtPrice(n) {
+  return Number(n || 0).toLocaleString('ru-RU') + ' сом';
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('ky-KG', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+function statusBadge(s) {
+  const map = {
+    booked: ['badge-booked','🔖 Брондолгон'],
+    deposit: ['badge-deposit','💳 Аванс'],
+    in_progress: ['badge-progress','⚡ Иштелүүдө'],
+    completed: ['badge-completed','✅ Аяктаган']
+  };
+  const [cls, label] = map[s] || ['badge-booked', s];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+async function loadDashboard() {
+  const res = await apiFetch('/orders/stats');
+  if (res.success) {
+    const s = res.data.stats;
+    document.getElementById('statTotal').textContent = s.total;
+    document.getElementById('statProgress').textContent = s.in_progress;
+    document.getElementById('statCompleted').textContent = s.completed;
+    document.getElementById('statBooked').textContent = s.booked;
+    document.getElementById('statRevenue').textContent = fmtPrice(s.total_amount);
+    document.getElementById('statDeposit').textContent = fmtPrice(s.total_deposit);
+    document.getElementById('ov-booked').textContent = s.booked;
+    document.getElementById('ov-deposit').textContent = s.deposit;
+    document.getElementById('ov-progress').textContent = s.in_progress;
+    document.getElementById('ov-completed').textContent = s.completed;
+
+    const upcoming = res.data.upcoming;
+    const ul = document.getElementById('upcomingList');
+    if (upcoming.length) {
+      ul.innerHTML = upcoming.map(o => `
+        <div class="upcoming-item">
+          <div class="upcoming-dot" style="background:${statusColor(o.status)}"></div>
+          <div>
+            <div class="upcoming-client">${o.client_name}</div>
+            <div class="upcoming-detail">${o.service_type} · ${fmtPrice(o.price)}</div>
+          </div>
+          <div class="upcoming-date">${fmtDate(o.order_date)}</div>
+        </div>
+      `).join('');
+    }
+  } else {
+    // Demo data
+    document.getElementById('statTotal').textContent = '24';
+    document.getElementById('statProgress').textContent = '7';
+    document.getElementById('statCompleted').textContent = '12';
+    document.getElementById('statBooked').textContent = '5';
+    document.getElementById('statRevenue').textContent = '840,000 сом';
+    document.getElementById('statDeposit').textContent = '180,000 сом';
+    document.getElementById('ov-booked').textContent = '5';
+    document.getElementById('ov-deposit').textContent = '3';
+    document.getElementById('ov-progress').textContent = '7';
+    document.getElementById('ov-completed').textContent = '12';
+    document.getElementById('upcomingList').innerHTML = `
+      <div class="upcoming-item">
+        <div class="upcoming-dot" style="background:#8b5cf6"></div>
+        <div><div class="upcoming-client">Айгүл Асанова</div><div class="upcoming-detail">Фото сессия · 8,000 сом</div></div>
+        <div class="upcoming-date">15 мар</div>
+      </div>
+      <div class="upcoming-item">
+        <div class="upcoming-dot" style="background:#3b82f6"></div>
+        <div><div class="upcoming-client">Бакыт Уулу</div><div class="upcoming-detail">Клип тартуу · 15,000 сом</div></div>
+        <div class="upcoming-date">18 мар</div>
+      </div>
+      <div class="upcoming-item">
+        <div class="upcoming-dot" style="background:#f59e0b"></div>
+        <div><div class="upcoming-client">Nurzat Events</div><div class="upcoming-detail">Корпоратив видео · 25,000 сом</div></div>
+        <div class="upcoming-date">22 мар</div>
+      </div>
+    `;
+  }
+}
+
+function statusColor(s) {
+  return { booked:'#8b5cf6', deposit:'#f59e0b', in_progress:'#3b82f6', completed:'#10b981' }[s] || '#6b7280';
+}
+
+// ── ORDERS ────────────────────────────────────────────
+async function loadOrders() {
+  const statusFilter = document.getElementById('orderFilterStatus').value;
+  const url = statusFilter ? `/orders?status=${statusFilter}` : '/orders';
+  const res = await apiFetch(url);
+
+  const statuses = ['booked','deposit','in_progress','completed'];
+  statuses.forEach(s => {
+    document.getElementById(`cards-${s}`).innerHTML = '';
+    document.getElementById(`cnt-${s}`).textContent = '0';
+  });
+
+  let orders = res.success ? res.data : getDemoOrders();
+  allOrders = orders;
+
+  const grouped = { booked:[], deposit:[], in_progress:[], completed:[] };
+  orders.forEach(o => { if (grouped[o.status]) grouped[o.status].push(o); });
+
+  statuses.forEach(s => {
+    document.getElementById(`cnt-${s}`).textContent = grouped[s].length;
+    const container = document.getElementById(`cards-${s}`);
+    if (!grouped[s].length) {
+      container.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Буйрутма жок</div>`;
+      return;
+    }
+    container.innerHTML = grouped[s].map(o => orderCard(o)).join('');
+  });
+}
+
+function orderCard(o) {
+  return `
+  <div class="order-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+      <div>
+        <div class="order-client">${o.client_name}</div>
+        <div class="order-service">${o.service_type}</div>
+      </div>
+      ${statusBadge(o.status)}
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+      <div class="order-price">${fmtPrice(o.price)}</div>
+      <div class="order-date">📅 ${fmtDate(o.order_date)}</div>
+    </div>
+    ${o.deposit > 0 ? `<div style="font-size:11px;color:#fbbf24;margin-top:4px">Аванс: ${fmtPrice(o.deposit)}</div>` : ''}
+    ${o.comment ? `<div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4;border-top:1px solid var(--border);padding-top:8px">${o.comment}</div>` : ''}
+    <div class="order-actions">
+      <button class="btn-ghost" style="font-size:11px;padding:5px 10px" onclick="openOrderModal(${JSON.stringify(o).replace(/"/g,'&quot;')})">✏️ Өзгөртүү</button>
+      <div style="flex:1"></div>
+      <button class="btn-danger" style="font-size:11px" onclick="deleteOrder(${o.id})">🗑</button>
+    </div>
+  </div>`;
+}
+
+function getDemoOrders() {
+  return [
+    { id:1, client_name:'Айгүл Асанова', phone:'+996700111222', service_type:'Фото сессия', order_date:'2026-03-15', price:8000, deposit:2000, status:'booked', comment:'Жасмин паркта тартуу', photos:[] },
+    { id:2, client_name:'Бакыт Уулу', phone:'+996550222333', service_type:'Клип тартуу', order_date:'2026-03-18', price:15000, deposit:5000, status:'deposit', comment:'', photos:[] },
+    { id:3, client_name:'Nurzat Events', phone:'+996700333444', service_type:'Корпоратив видео', order_date:'2026-03-10', price:25000, deposit:10000, status:'in_progress', comment:'Корпоратив иш-чара', photos:[] },
+    { id:4, client_name:'Салтанат Исаева', phone:'+996555444555', service_type:'Логотип дизайн', order_date:'2026-02-20', price:12000, deposit:0, status:'completed', comment:'', photos:[] },
+    { id:5, client_name:'Акылбек Жолдошов', phone:'+996700555666', service_type:'Фото сессия', order_date:'2026-03-22', price:8000, deposit:3000, status:'booked', comment:'Кезектеги сессия', photos:[] },
+    { id:6, client_name:'Белек Абдиев', phone:'+996550666777', service_type:'SMM Дизайн', order_date:'2026-03-05', price:6000, deposit:0, status:'in_progress', comment:'', photos:[] },
+  ];
+}
+
+function openOrderModal(order = null) {
+  document.getElementById('orderEditId').value = order ? order.id : '';
+  document.getElementById('orderModalTitle').textContent = order ? 'Буйрутманы өзгөртүү' : 'Жаңы буйрутма';
+  ['client_name','phone','service_type','order_date','price','deposit','status','comment'].forEach(f => {
+    const el = document.getElementById(`f-${f}`);
+    if (el) el.value = order ? (order[f] || '') : (f === 'status' ? 'booked' : '');
+  });
+  if (!order) {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('f-order_date').value = today;
+  }
+  currentOrderPhotos = order ? [...(order.photos || [])] : [];
+  syncOrderPhotoInput();
+  renderOrderPhotoPreview();
+  document.getElementById('f-photos-upload').value = '';
+  openModal('orderModal');
+}
+
+async function saveOrder() {
+  syncOrderPhotoUrls();
+  const id = document.getElementById('orderEditId').value;
+  const data = {
+    client_name: document.getElementById('f-client_name').value,
+    phone: document.getElementById('f-phone').value,
+    service_type: document.getElementById('f-service_type').value,
+    order_date: document.getElementById('f-order_date').value,
+    price: document.getElementById('f-price').value || 0,
+    deposit: document.getElementById('f-deposit').value || 0,
+    status: document.getElementById('f-status').value,
+    comment: document.getElementById('f-comment').value,
+    photos: currentOrderPhotos
+  };
+  if (!data.client_name || !data.phone || !data.order_date) {
+    showToast('Милдеттүү талааларды толтуруңуз', 'error'); return;
+  }
+  const res = await apiFetch(id ? `/orders/${id}` : '/orders', {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(data)
+  });
+  closeModal('orderModal');
+  showToast(id ? 'Буйрутма жаңыланды' : 'Буйрутма кошулду');
+  loadOrders();
+}
+
+async function deleteOrder(id) {
+  if (!confirm('Буйрутманы жок кылуу?')) return;
+  await apiFetch(`/orders/${id}`, { method: 'DELETE' });
+  showToast('Буйрутма жок кылынды');
+  allOrders = allOrders.filter(o => o.id !== id);
+  loadOrders();
+}
+
+// ── EQUIPMENT ─────────────────────────────────────────
+async function loadEquipment() {
+  const res = await apiFetch('/equipment');
+  allEquipment = res.success ? res.data : getDemoEquipment();
+  renderEquipment(allEquipment);
+}
+
+function getDemoEquipment() {
+  return [
+    { id:1, name:'Sony A7 III', category:'Камера', description:'Кесипкөй фото жана видео камера 4K', photo_url:'📷', status:'free' },
+    { id:2, name:'DJI Ronin-S', category:'Стабилизатор', description:'3-огу карусель стабилизатор', photo_url:'🎬', status:'free' },
+    { id:3, name:'Aputure 300D', category:'Жарык', description:'Кесипкөй LED жарыктандыруу 300W', photo_url:'💡', status:'in_use' },
+    { id:4, name:'DJI Mini 3 Pro', category:'Дрон', description:'Аэрофотосъёмка үчүн дрон 4K HDR', photo_url:'🚁', status:'free' },
+    { id:5, name:'MacBook Pro M3', category:'Компьютер', description:'Монтаж жана дизайн үчүн Apple MacBook', photo_url:'💻', status:'in_use' },
+  ];
+}
+
+function renderEquipment(items) {
+  const grid = document.getElementById('equipmentGrid');
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">🎥</div><div class="title">Жабдуулар жок</div><div class="sub">Жаңы жабдуу кошуу</div></div>`;
+    return;
+  }
+  grid.innerHTML = items.map(e => equipmentCard(e)).join('');
+}
+
+function equipmentCard(e) {
+  const isUrl = e.photo_url && e.photo_url.startsWith('http');
+  const imgHtml = isUrl
+    ? `<img src="${e.photo_url}" alt="${e.name}" class="equipment-img" />`
+    : `<div class="equipment-img" style="font-size:52px">${e.photo_url || '📦'}</div>`;
+  return `
+  <div class="equipment-card">
+    ${imgHtml}
+    <div class="equipment-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div>
+          <div class="equipment-name">${e.name}</div>
+          <div class="equipment-cat">${e.category || ''}</div>
+        </div>
+        <span class="badge ${e.status === 'free' ? 'badge-free' : 'badge-in-use'}" style="flex-shrink:0">
+          ${e.status === 'free' ? '🟢 Бош' : '🔴 Колдонулууда'}
+        </span>
+      </div>
+      <div class="equipment-desc">${e.description || ''}</div>
+      <div style="display:flex;gap:6px;margin-top:12px">
+        <button class="btn-ghost" style="font-size:11px;flex:1;padding:6px" onclick="openEquipmentModal(${JSON.stringify(e).replace(/"/g,'&quot;')})">✏️ Өзгөртүү</button>
+        <button class="btn-${e.status==='free'?'danger':'success'}" style="font-size:11px;padding:6px 10px"
+          onclick="toggleEquipStatus(${e.id},'${e.status==='free'?'in_use':'free'}')">
+          ${e.status==='free'?'🔴':'🟢'}
+        </button>
+        <button class="btn-danger" style="font-size:11px;padding:6px 10px" onclick="deleteEquipment(${e.id})">🗑</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openEquipmentModal(equip = null) {
+  document.getElementById('equip-id').value = equip ? equip.id : '';
+  document.getElementById('equipModalTitle').textContent = equip ? 'Жабдууну өзгөртүү' : 'Жаңы жабдуу';
+  ['name','category','status','photo','desc'].forEach(f => {
+    const el = document.getElementById(`equip-${f}`);
+    const key = f === 'photo' ? 'photo_url' : f === 'desc' ? 'description' : f;
+    if (el) el.value = equip ? (equip[key] || '') : (f === 'status' ? 'free' : '');
+  });
+  openModal('equipmentModal');
+}
+
+async function saveEquipment() {
+  const id = document.getElementById('equip-id').value;
+  const data = {
+    name: document.getElementById('equip-name').value,
+    category: document.getElementById('equip-category').value,
+    status: document.getElementById('equip-status').value,
+    photo_url: document.getElementById('equip-photo').value,
+    description: document.getElementById('equip-desc').value,
+  };
+  if (!data.name) { showToast('Аппараттын атын киргизиңиз', 'error'); return; }
+  const res = await apiFetch(id ? `/equipment/${id}` : '/equipment', {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(data)
+  });
+  if (res._demo) {
+    const item = { ...data, id: id || Date.now() };
+    if (id) allEquipment = allEquipment.map(e => e.id == id ? item : e);
+    else allEquipment.push(item);
+    renderEquipment(allEquipment);
+  } else {
+    loadEquipment();
+  }
+  closeModal('equipmentModal');
+  showToast(id ? 'Жабдуу жаңыланды' : 'Жабдуу кошулду');
+}
+
+async function toggleEquipStatus(id, newStatus) {
+  await apiFetch(`/equipment/${id}/status`, { method:'PATCH', body:JSON.stringify({ status:newStatus }) });
+  allEquipment = allEquipment.map(e => e.id == id ? { ...e, status: newStatus } : e);
+  renderEquipment(allEquipment);
+}
+
+async function deleteEquipment(id) {
+  if (!confirm('Жабдууну жок кылуу?')) return;
+  await apiFetch(`/equipment/${id}`, { method:'DELETE' });
+  allEquipment = allEquipment.filter(e => e.id !== id);
+  renderEquipment(allEquipment);
+  showToast('Жабдуу жок кылынды');
+}
+
+// ── SERVICES ──────────────────────────────────────────
+async function loadServices() {
+  const res = await apiFetch('/services');
+  allServices = res.success ? res.data : getDemoServices();
+  renderServices(allServices);
+}
+
+function getDemoServices() {
+  return [
+    { id:1, name:'Клип тартуу', category:'video', description:'Кесипкөй клип тартуу кызматы', price:15000, duration:'4-8 саат' },
+    { id:2, name:'Корпоратив видео', category:'video', description:'Компания үчүн видео контент жасоо', price:25000, duration:'1-2 күн' },
+    { id:3, name:'Фото сессия', category:'photo', description:'Студиялык же сырттагы фото сессия', price:8000, duration:'2-3 саат' },
+    { id:4, name:'Продукт фото', category:'photo', description:'Товар жана продукт фотографиясы', price:5000, duration:'2-4 саат' },
+    { id:5, name:'Логотип дизайн', category:'design', description:'Уникалдуу логотип иштеп чыгуу', price:12000, duration:'3-5 жумуш күн' },
+    { id:6, name:'SMM Дизайн', category:'design', description:'Социалдык медиа контент жана баннерлер', price:6000, duration:'1-2 жумуш күн' },
+  ];
+}
+
+function filterServices(cat, el) {
+  document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  serviceFilter = cat;
+  const filtered = cat === 'all' ? allServices : allServices.filter(s => s.category === cat);
+  renderServices(filtered);
+}
+
+function renderServices(items) {
+  const grid = document.getElementById('servicesGrid');
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">✨</div><div class="title">Кызматтар жок</div></div>`;
+    return;
+  }
+  grid.innerHTML = items.map(s => serviceCard(s)).join('');
+}
+
+const catIcon = { video:'🎬', photo:'📷', design:'🎨' };
+const catLabel = { video:'Видео', photo:'Фото', design:'Дизайн' };
+const catColor = { video:'rgba(59,130,246,0.15);color:#60a5fa', photo:'rgba(139,92,246,0.15);color:#a78bfa', design:'rgba(245,158,11,0.1);color:#fbbf24' };
+
+function serviceCard(s) {
+  return `
+  <div class="service-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;background:${catColor[s.category]}">${catIcon[s.category]} ${catLabel[s.category]}</span>
+    </div>
+    <div class="service-name">${s.name}</div>
+    <div class="service-desc">${s.description || ''}</div>
+    <div class="service-price">${fmtPrice(s.price)}</div>
+    ${s.duration ? `<div class="service-duration">⏱ ${s.duration}</div>` : ''}
+    <div style="display:flex;gap:6px;margin-top:14px;border-top:1px solid var(--border);padding-top:12px">
+      <button class="btn-ghost" style="font-size:11px;flex:1;padding:6px" onclick="openServiceModal(${JSON.stringify(s).replace(/"/g,'&quot;')})">✏️ Өзгөртүү</button>
+      <button class="btn-danger" style="font-size:11px;padding:6px 10px" onclick="deleteService(${s.id})">🗑</button>
+    </div>
+  </div>`;
+}
+
+function openServiceModal(svc = null) {
+  document.getElementById('svc-id').value = svc ? svc.id : '';
+  document.getElementById('svcModalTitle').textContent = svc ? 'Кызматты өзгөртүү' : 'Жаңы кызмат';
+  ['name','category','price','duration','description','notes'].forEach(f => {
+    const el = document.getElementById(`svc-${f}`);
+    if (el) el.value = svc ? (svc[f] || '') : (f === 'category' ? 'video' : '');
+  });
+  openModal('serviceModal');
+}
+
+async function saveService() {
+  const id = document.getElementById('svc-id').value;
+  const data = {
+    name: document.getElementById('svc-name').value,
+    category: document.getElementById('svc-category').value,
+    price: document.getElementById('svc-price').value || 0,
+    duration: document.getElementById('svc-duration').value,
+    description: document.getElementById('svc-description').value,
+    notes: document.getElementById('svc-notes').value,
+  };
+  if (!data.name) { showToast('Кызматтын атын киргизиңиз', 'error'); return; }
+  const res = await apiFetch(id ? `/services/${id}` : '/services', {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(data)
+  });
+  if (res._demo) {
+    const item = { ...data, id: id || Date.now() };
+    if (id) allServices = allServices.map(s => s.id == id ? item : s);
+    else allServices.push(item);
+    const filtered = serviceFilter === 'all' ? allServices : allServices.filter(s => s.category === serviceFilter);
+    renderServices(filtered);
+  } else {
+    loadServices();
+  }
+  closeModal('serviceModal');
+  showToast(id ? 'Кызмат жаңыланды' : 'Кызмат кошулду');
+}
+
+async function deleteService(id) {
+  if (!confirm('Кызматты жок кылуу?')) return;
+  await apiFetch(`/services/${id}`, { method:'DELETE' });
+  allServices = allServices.filter(s => s.id !== id);
+  const filtered = serviceFilter === 'all' ? allServices : allServices.filter(s => s.category === serviceFilter);
+  renderServices(filtered);
+  showToast('Кызмат жок кылынды');
+}
+
+// ── CALENDAR ──────────────────────────────────────────
+const KY_MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+async function loadCalendarDates() {
+  const [res, offDaysRes] = await Promise.all([
+    apiFetch(`/orders/calendar?month=${calMonth}&year=${calYear}`),
+    apiFetch(`/orders/calendar/off-days?month=${calMonth}&year=${calYear}`)
+  ]);
+  calOrderDates = {};
+  calOffDays = [];
+  const dates = res.success ? res.data : getDemoCalDates();
+  dates.forEach(d => {
+    const key = new Date(d.order_date || d).toISOString().split('T')[0];
+    calOrderDates[key] = d.count || 1;
+  });
+  if (offDaysRes.success) {
+    calOffDays = offDaysRes.data.map(d => new Date(d.off_date).toISOString().split('T')[0]);
+  }
+  renderCalendar();
+  loadCalMonthOrders();
+  if (calSelectedDate && calSelectedDate.startsWith(`${calYear}-${String(calMonth).padStart(2,'0')}-`)) {
+    selectCalDay(calSelectedDate, Number(calSelectedDate.slice(-2)));
+  }
+}
+
+function getDemoCalDates() {
+  const yr = calYear; const mo = String(calMonth).padStart(2,'0');
+  return [
+    { order_date: `${yr}-${mo}-05`, count:2 },
+    { order_date: `${yr}-${mo}-10`, count:1 },
+    { order_date: `${yr}-${mo}-15`, count:3 },
+    { order_date: `${yr}-${mo}-18`, count:1 },
+    { order_date: `${yr}-${mo}-22`, count:2 },
+  ];
+}
+
+function renderCalendar() {
+  document.getElementById('calTitle').textContent = `${KY_MONTHS[calMonth-1]} ${calYear}`;
+  const firstDay = new Date(calYear, calMonth-1, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+
+  // Monday-based offset
+  const offset = (firstDay === 0 ? 6 : firstDay - 1);
+  const daysContainer = document.getElementById('calDays');
+  let html = '';
+
+  for (let i = 0; i < offset; i++) html += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr === todayStr;
+    const hasOrders = calOrderDates[dateStr];
+    const isSelected = dateStr === calSelectedDate;
+    const offDay = isOffDay(dateStr);
+    html += `<div class="cal-day${isToday?' today':''}${hasOrders?' has-orders':''}${offDay?' off-day':''}${isSelected?' selected':''}" data-date="${dateStr}"
+      onclick="selectCalDay('${dateStr}', ${d}, this)">${d}</div>`;
+  }
+  daysContainer.innerHTML = html;
+}
+
+async function toggleOffDayLegacy(dateStr, day) {
+  if (isOffDay(dateStr)) calOffDays = calOffDays.filter(d => d !== dateStr);
+  else calOffDays = [...calOffDays, dateStr].sort();
+  persistOffDays();
+  renderCalendar();
+  selectCalDay(dateStr, day);
+  showToast(isOffDay(dateStr) ? 'Кызыл күн белгиленди' : 'Кызыл күн алынды');
+}
+
+function clearOffDaysForMonthLegacy() {
+  const monthPrefix = `${calYear}-${String(calMonth).padStart(2,'0')}-`;
+  const next = calOffDays.filter(d => !d.startsWith(monthPrefix));
+  if (next.length === calOffDays.length) {
+    showToast('Бул айда белгиленген кызыл күндөр жок', 'error');
+    return;
+  }
+  calOffDays = next;
+  persistOffDays();
+  renderCalendar();
+  if (calSelectedDate && calSelectedDate.startsWith(monthPrefix)) {
+    selectCalDay(calSelectedDate, Number(calSelectedDate.slice(-2)));
+  }
+  showToast('Айдагы кызыл күндөр тазаланды');
+}
+
+async function selectCalDayLegacy(dateStr, day, dayEl = null) {
+  calSelectedDate = dateStr;
+  document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+  const selectedEl = dayEl || document.querySelector(`.cal-day[data-date="${dateStr}"]`);
+  if (selectedEl) selectedEl.classList.add('selected');
+
+  const panel = document.getElementById('calOrdersPanel');
+  const label = document.getElementById('calSelectedDate');
+  const container = document.getElementById('calDayOrders');
+  const isManualOffDay = isOffDay(dateStr);
+
+  label.textContent = `${day} ${KY_MONTHS[calMonth-1]} ${calYear}`;
+  panel.style.display = 'block';
+
+  const res = await apiFetch(`/orders?date=${dateStr}`);
+  const orders = res.success ? res.data : allOrders.filter(o => o.order_date && o.order_date.startsWith(dateStr.substring(0,10)));
+  const offDayCard = `
+    <div style="padding:12px;background:${isManualOffDay ? 'rgba(239,68,68,0.12)' : 'rgba(59,130,246,0.08)'};border-radius:12px;margin-bottom:10px;border:1px solid ${isManualOffDay ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.18)'}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:${isManualOffDay ? '#fca5a5' : '#93c5fd'}">${isManualOffDay ? 'Бул күн дем алыш катары белгиленген' : 'Бул күндү дем алыш катары белгилей аласыз'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Кызыл күндөр ушул түзмөктө сакталат.</div>
+        </div>
+        <button class="${isManualOffDay ? 'btn-ghost' : 'btn-danger'}" onclick="toggleOffDay('${dateStr}', ${day})">${isManualOffDay ? 'Кызыл белгини алып салуу' : 'Кызыл күн кылып белгилөө'}</button>
+      </div>
+    </div>
+  `;
+
+  if (!orders.length) {
+    container.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:8px 0">Бул күнгө буйрутмалар жок</div>`;
+    return;
+  }
+  container.innerHTML = offDayCard + orders.map(o => `
+    <div style="padding:10px;background:var(--card2);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:600">${o.client_name}</div>
+        ${statusBadge(o.status)}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${o.service_type} · ${fmtPrice(o.price)}</div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:2px">📞 ${o.phone}</div>
+    </div>
+  `).join('');
+}
+
+async function selectCalDay(dateStr, day, dayEl = null) {
+  calSelectedDate = dateStr;
+  document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+  const selectedEl = dayEl || document.querySelector(`.cal-day[data-date="${dateStr}"]`);
+  if (selectedEl) selectedEl.classList.add('selected');
+
+  const panel = document.getElementById('calOrdersPanel');
+  const label = document.getElementById('calSelectedDate');
+  const container = document.getElementById('calDayOrders');
+  const isManualOffDay = isOffDay(dateStr);
+
+  label.textContent = `${day} ${KY_MONTHS[calMonth-1]} ${calYear}`;
+  panel.style.display = 'block';
+
+  const res = await apiFetch(`/orders?date=${dateStr}`);
+  const orders = res.success ? res.data : allOrders.filter(o => o.order_date && o.order_date.startsWith(dateStr.substring(0,10)));
+  const offDayCard = `
+    <div style="padding:12px;background:${isManualOffDay ? 'rgba(239,68,68,0.12)' : 'rgba(59,130,246,0.08)'};border-radius:12px;margin-bottom:10px;border:1px solid ${isManualOffDay ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.18)'}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:${isManualOffDay ? '#fca5a5' : '#93c5fd'}">${isManualOffDay ? 'Бул күн дем алыш катары белгиленген' : 'Бул күндү дем алыш катары белгилей аласыз'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Кызыл күндөр ушул түзмөктө сакталат.</div>
+        </div>
+        <button class="${isManualOffDay ? 'btn-ghost' : 'btn-danger'}" onclick="toggleOffDay('${dateStr}', ${day})">${isManualOffDay ? 'Кызыл белгини алып салуу' : 'Кызыл күн кылып белгилөө'}</button>
+      </div>
+    </div>
+  `;
+
+  if (!orders.length) {
+    container.innerHTML = offDayCard + `<div style="color:var(--muted);font-size:13px;padding:8px 0">Бул күнгө буйрутмалар жок</div>`;
+    return;
+  }
+
+  container.innerHTML = offDayCard + orders.map(o => `
+    <div style="padding:10px;background:var(--card2);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:600">${o.client_name}</div>
+        ${statusBadge(o.status)}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${o.service_type} · ${fmtPrice(o.price)}</div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:2px">📞 ${o.phone}</div>
+    </div>
+  `).join('');
+}
+
+async function toggleOffDay(dateStr, day) {
+  const removing = isOffDay(dateStr);
+  const res = await apiFetch(
+    removing ? `/orders/calendar/off-days/${dateStr}` : '/orders/calendar/off-days',
+    removing
+      ? { method: 'DELETE' }
+      : { method: 'POST', body: JSON.stringify({ off_date: dateStr }) }
+  );
+  if (!res.success) {
+    showToast('Кызыл күндү сактоодо ката кетти', 'error');
+    return;
+  }
+  await loadCalendarDates();
+  await selectCalDay(dateStr, day);
+  showToast(removing ? 'Кызыл күн алынды' : 'Кызыл күн белгиленди');
+}
+
+async function clearOffDaysForMonth() {
+  const monthPrefix = `${calYear}-${String(calMonth).padStart(2,'0')}-`;
+  if (!calOffDays.some(d => d.startsWith(monthPrefix))) {
+    showToast('Бул айда белгиленген кызыл күндөр жок', 'error');
+    return;
+  }
+  const res = await apiFetch(`/orders/calendar/off-days?month=${calMonth}&year=${calYear}`, { method: 'DELETE' });
+  if (!res.success) {
+    showToast('Кызыл күндөрдү тазалоодо ката кетти', 'error');
+    return;
+  }
+  await loadCalendarDates();
+  if (calSelectedDate && calSelectedDate.startsWith(monthPrefix)) {
+    await selectCalDay(calSelectedDate, Number(calSelectedDate.slice(-2)));
+  }
+  showToast('Айдагы кызыл күндөр тазаланды');
+}
+
+async function selectCalDay(dateStr, day, dayEl = null) {
+  calSelectedDate = dateStr;
+  document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+  const selectedEl = dayEl || document.querySelector(`.cal-day[data-date="${dateStr}"]`);
+  if (selectedEl) selectedEl.classList.add('selected');
+
+  const panel = document.getElementById('calOrdersPanel');
+  const label = document.getElementById('calSelectedDate');
+  const container = document.getElementById('calDayOrders');
+  const isManualOffDay = isOffDay(dateStr);
+
+  label.textContent = `${day} ${KY_MONTHS[calMonth - 1]} ${calYear}`;
+  panel.style.display = 'block';
+
+  const res = await apiFetch(`/orders?date=${dateStr}`);
+  const orders = res.success
+    ? res.data
+    : allOrders.filter(o => o.order_date && o.order_date.startsWith(dateStr.substring(0, 10)));
+
+  const offDayCard = `
+    <div style="padding:12px;background:${isManualOffDay ? 'rgba(239,68,68,0.12)' : 'rgba(59,130,246,0.08)'};border-radius:12px;margin-bottom:10px;border:1px solid ${isManualOffDay ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.18)'}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:${isManualOffDay ? '#fca5a5' : '#93c5fd'}">${isManualOffDay ? 'Бул күн дем алыш катары белгиленген' : 'Бул күндү дем алыш катары белгилей аласыз'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Маалымат PostgreSQL базасында сакталат.</div>
+        </div>
+        <button class="${isManualOffDay ? 'btn-ghost' : 'btn-danger'}" onclick="toggleOffDay('${dateStr}', ${day})">${isManualOffDay ? 'Кызыл белгини алып салуу' : 'Кызыл күн кылып белгилөө'}</button>
+      </div>
+    </div>
+  `;
+
+  if (!orders.length) {
+    container.innerHTML = offDayCard + `<div style="color:var(--muted);font-size:13px;padding:8px 0">Бул күнгө буйрутмалар жок</div>`;
+    return;
+  }
+
+  container.innerHTML = offDayCard + orders.map(o => `
+    <div style="padding:10px;background:var(--card2);border-radius:10px;margin-bottom:8px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:600">${o.client_name}</div>
+        ${statusBadge(o.status)}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${o.service_type} · ${fmtPrice(o.price)}</div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:2px">📞 ${o.phone}</div>
+    </div>
+  `).join('');
+}
+
+async function loadCalMonthOrders() {
+  const res = await apiFetch(`/orders?month=${calMonth}&year=${calYear}`);
+  const orders = res.success ? res.data : getDemoOrders().slice(0, 4);
+  const container = document.getElementById('calMonthOrders');
+  if (!orders.length) {
+    container.innerHTML = `<div class="empty-state" style="padding:16px"><div class="sub">Буйрутмалар жок</div></div>`;
+    return;
+  }
+  container.innerHTML = orders.map(o => `
+    <div class="upcoming-item" style="padding:8px">
+      <div class="upcoming-dot" style="background:${statusColor(o.status)}"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.client_name}</div>
+        <div style="font-size:11px;color:var(--muted)">${fmtDate(o.order_date)}</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:#60a5fa;white-space:nowrap">${fmtPrice(o.price)}</div>
+    </div>
+  `).join('');
+}
+
+function calPrev() {
+  calMonth--;
+  if (calMonth < 1) { calMonth = 12; calYear--; }
+  loadCalendarDates();
+}
+
+function calNext() {
+  calMonth++;
+  if (calMonth > 12) { calMonth = 1; calYear++; }
+  loadCalendarDates();
+}
+
+// ── CALCULATOR ────────────────────────────────────────
+let calcOpts = {};
+
+async function loadCalcServices() {
+  const sel = document.getElementById('calcService');
+  const res = await apiFetch('/services');
+  const services = res.success ? res.data : getDemoServices();
+  sel.innerHTML = `<option value="0">Тандаңыз...</option>` +
+    services.map(s => `<option value="${s.price}" data-name="${s.name}">${catIcon[s.category]} ${s.name} — ${fmtPrice(s.price)}</option>`).join('');
+  calcUpdate();
+}
+
+function toggleCalcOpt(key, val, labelEl) {
+  // toggled by checkbox change, just update
+  setTimeout(calcUpdate, 10);
+}
+
+function calcUpdate() {
+  const servicePrice = parseInt(document.getElementById('calcService').value) || 0;
+  const hours = parseInt(document.getElementById('calcHours').value) || 1;
+  const equipRate = parseInt(document.getElementById('calcEquipment').value) || 0;
+  const discount = parseInt(document.getElementById('calcDiscount').value) || 0;
+
+  const opts = ['drone','stabilizer','lighting','color'];
+  const optVals = { drone:5000, stabilizer:3000, lighting:2000, color:4000 };
+  let optsTotal = 0;
+  opts.forEach(k => {
+    const chk = document.getElementById(`chk-${k}`);
+    if (chk && chk.checked) optsTotal += optVals[k];
+  });
+
+  const base = servicePrice;
+  const equipTotal = equipRate * hours;
+  const subtotal = base + optsTotal + equipTotal;
+  const discountAmt = Math.round(subtotal * discount / 100);
+  const total = subtotal - discountAmt;
+
+  document.getElementById('calcTotal').textContent = total.toLocaleString('ru-RU') + ' сом';
+  let breakdown = [];
+  if (base) breakdown.push(`Кызмат: ${base.toLocaleString('ru-RU')} сом`);
+  if (optsTotal) breakdown.push(`Опциялар: ${optsTotal.toLocaleString('ru-RU')} сом`);
+  if (equipTotal) breakdown.push(`Техника (${hours}ч): ${equipTotal.toLocaleString('ru-RU')} сом`);
+  if (discountAmt) breakdown.push(`Скидка: -${discountAmt.toLocaleString('ru-RU')} сом`);
+  document.getElementById('calcBreakdown').textContent = breakdown.join(' · ');
+}
+
+function resetCalc() {
+  document.getElementById('calcService').value = '0';
+  document.getElementById('calcHours').value = 2;
+  document.getElementById('calcHoursVal').textContent = 2;
+  document.getElementById('calcEquipment').value = '0';
+  document.getElementById('calcDiscount').value = 0;
+  ['drone','stabilizer','lighting','color'].forEach(k => {
+    const el = document.getElementById(`chk-${k}`);
+    if (el) el.checked = false;
+  });
+  calcUpdate();
+}
+
+function applyToOrder() {
+  const total = document.getElementById('calcTotal').textContent;
+  const sel = document.getElementById('calcService');
+  const svcName = sel.options[sel.selectedIndex]?.dataset?.name || '';
+  navigate('orders', document.querySelector('.nav-item[onclick*="orders"]'));
+  setTimeout(() => {
+    openOrderModal();
+    document.getElementById('f-price').value = total.replace(/[^\d]/g, '');
+    if (svcName) document.getElementById('f-service_type').value = svcName;
+    showToast('Калькулятор суммасы кошулду');
+  }, 200);
+}
+
+// ── INIT ──────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  navigate('dashboard', document.querySelector('.nav-item'));
+  // Close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+  });
+});
+</script>
+</body>
+</html>
